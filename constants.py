@@ -1,0 +1,1 @@
+DOLEV_STRONG_PROTOCOL = "DolevStrong"

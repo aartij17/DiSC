@@ -1,14 +1,12 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod
 
 
-class protocol():
-    __metaclass__ = ABCMeta
-
+class Protocol(ABC):
     @abstractmethod
-    def __init__ (self):
-        #stub
+    def __init__(self):
+        self.round = 0
         pass
     
     @abstractmethod
-    def run (self, received_messages):
+    def run(self, received_messages):
         return []
