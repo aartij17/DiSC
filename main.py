@@ -1,9 +1,9 @@
-
-
+from nwprocess import nwprocess
+from protocol import protocol
+from node import node
 
 
 class main:
-
     def __init__(self):
         (self.num_h_nodes, self.num_a_nodes) = self.get_initialization()
         # initialize number of nodes, *nwprocess
@@ -12,7 +12,8 @@ class main:
         self.h_nodes_arr = []
         self.a_nodes_arr = []
         self.protocol = protocol() #stub
-        self.ui = ui()
+        # TODO: uncomment when we have a UI component
+        #self.ui = ui()
         
         # initialize honest nodes
         for i in range (self.num_h_nodes):
@@ -24,8 +25,7 @@ class main:
             a_node = node(i + self.num_h_nodes, self.protocol, self.np, adversary=True)
             self.a_nodes_arr.append (a_node)
 
-
-    def get_initialization():
+    def get_initialization(self):
         return (5, 0) # nodes, stub
 
     def start_loop(self):
@@ -40,14 +40,13 @@ class main:
             # call adversary actions
             for i in range (self.num_a_nodes):
                 self.a_nodes_arr[i].adversary_actions()
-            
-            self.ui.update() # Might need to take in nodes, messages 
+            # TODO: uncomment when we have UI component
+            #self.ui.update() # Might need to take in nodes, messages
             input()
             
             self.np.empty_messages()
-            
 
 
 if __name__ == '__main__':
-    m = main ()
-    m.start()
+    m = main()
+    m.start_loop()
