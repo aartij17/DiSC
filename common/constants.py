@@ -1,1 +1,2 @@
 DOLEV_STRONG_PROTOCOL = "DolevStrong"
+STREAMLET_PROTOCOL = "Streamlet"

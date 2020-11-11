@@ -1,5 +1,5 @@
-from dolev_strong import DolevStrong
-from constants import *
+from Protocols.dolev_strong import DolevStrong
+from common.constants import *
 
 
 def get_protocol(protocol):

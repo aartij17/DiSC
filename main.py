@@ -1,11 +1,9 @@
+from common.utils import *
 from nwprocess import nwprocess
-from protocol import Protocol
-from node import node
-from constants import *
-from utils import *
+from node import Node
 
 
-class main:
+class Main:
     def __init__(self, protocol):
         (self.num_h_nodes, self.num_a_nodes) = self.get_initialization()
         # initialize number of nodes, *nwprocess
@@ -23,12 +21,12 @@ class main:
 
         # initialize honest nodes
         for i in range(self.num_h_nodes):
-            h_node = node(i, self.protocol, self.np)
+            h_node = Node(i, self.protocol, self.np)
             self.h_nodes_arr.append(h_node)
 
         # initialize adversary nodes
         for i in range(self.num_a_nodes):
-            a_node = node(i + self.num_h_nodes, self.protocol, self.np, adversary=True)
+            a_node = Node(i + self.num_h_nodes, self.protocol, self.np, adversary=True)
             self.a_nodes_arr.append(a_node)
 
     def get_initialization(self):
@@ -56,5 +54,5 @@ class main:
 if __name__ == '__main__':
     # TODO: this is hard-coded for now, make this a user-input
     protocol_chosen = DOLEV_STRONG_PROTOCOL
-    m = main(protocol_chosen)
+    m = Main(protocol_chosen)
     m.start_loop()

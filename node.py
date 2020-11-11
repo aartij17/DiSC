@@ -1,6 +1,6 @@
-class node:
-    def __init__(self, id, protocol, np, adversary=False):
-        self.id = id
+class Node:
+    def __init__(self, node_id, protocol, np, adversary=False):
+        self.id = node_id
         self.received_messages = []
         self.committed_log = []
         self.protocol = protocol
