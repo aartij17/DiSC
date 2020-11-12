@@ -1,4 +1,4 @@
-class nwprocess:
+class NetworkProcess:
     def __init__(self, num_nodes):
         self.num_nodes = num_nodes
         self.prev_messages_passed = []
@@ -6,8 +6,8 @@ class nwprocess:
 
         # [ [] [] [] [] ]
         for i in range(num_nodes):
-            self.prev_messages_passed.append([])
-            self.next_messages_passed.append([])
+            self.prev_messages_passed.append(["b1", "b2"])
+            self.next_messages_passed.append(["b1"])
 
     def send_message(self, send_node_id, receive_node_id, message):
         self.next_messages_passed[receive_node_id][send_node_id] = message

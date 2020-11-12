@@ -1,5 +1,5 @@
 from common.utils import *
-from nwprocess import nwprocess
+from network_process import NetworkProcess
 from node import Node
 
 
@@ -8,13 +8,13 @@ class Main:
         (self.num_h_nodes, self.num_a_nodes) = self.get_initialization()
         # initialize number of nodes, *nwprocess
         self.num_nodes = self.num_a_nodes + self.num_h_nodes
-        self.np = nwprocess(self.num_nodes)
+        self.np = NetworkProcess(self.num_nodes)
 
         self.h_nodes_arr = []
         self.a_nodes_arr = []
 
         # initialize main with the protocol object
-        self.protocol = get_protocol(protocol)
+        self.protocol = get_protocol(protocol, self.num_a_nodes, self.num_h_nodes)
 
         # TODO: uncomment when we have a UI component
         # self.ui = ui()
@@ -30,7 +30,7 @@ class Main:
             self.a_nodes_arr.append(a_node)
 
     def get_initialization(self):
-        return 5, 0  # nodes, stub
+        return 2, 0  # nodes, stub
 
     def start_loop(self):
         while True:
@@ -44,6 +44,9 @@ class Main:
             # call adversary actions
             for i in range(self.num_a_nodes):
                 self.a_nodes_arr[i].adversary_actions()
+
+            self.protocol.round += 1
+
             # TODO: uncomment when we have UI component
             # self.ui.update() # Might need to take in nodes, messages
             input()
