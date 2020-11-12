@@ -4,10 +4,14 @@ class nwprocess:
         self.prev_messages_passed = []
         for i in range (num_nodes):
             self.prev_messages_passed.append ([])
+            for j in range(num_nodes):
+                self.prev_messages_passed.append("")
             
         self.next_messages_passed = []
         for i in range (num_nodes):
             self.next_messages_passed.append ([])
+            for j in range(num_nodes):
+                self.next_messages_passed.append("")
         # [ [] [] [] [] ]
 
     def send_message(self, send_node_id, receive_node_id, message):
@@ -25,6 +29,8 @@ class nwprocess:
         self.next_messages_passed = []
         for i in range (self.num_nodes):
             self.next_messages_passed.append ([])
+            for j in range(num_nodes):
+                self.next_messages_passed.append("")
     
     def num_nodes(self):
         return self.num_nodes
