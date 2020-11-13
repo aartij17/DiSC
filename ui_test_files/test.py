@@ -2,6 +2,7 @@ import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
 
+
 plt.figure(figsize=(12, 9))
 
 From = ['Food\nProduction', 'Transportation', 'Energy\nProduction',
