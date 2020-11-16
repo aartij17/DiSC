@@ -18,17 +18,14 @@ class Node:
         # received_messages is a list of messages which this node i received
         # these messages are processed by the protocol
         self.received_messages = self.np.receive_messages(self.get_id())
-        print("received messages: ", self.received_messages)
-        # run protocol with stored messages
-        send_messages = self.protocol.run(self.received_messages, self.get_id(), self.committed_log)
+        print("node ID: {}, received messages: {}".format(self.get_id(), self.received_messages))
+
+        send_messages, multi_message = self.protocol.run(self.received_messages, self.get_id(), self.committed_log)
         print("send messages: ", send_messages)
-        # send messages from protocol (protocol returns a 2D array of messages to send)
-        # [Aarti]: I think we might be better off if we move this entire logic to protocol instead of keeping it
-        # generic per node. Dolev Strong requires broadcast PER MESSAGE, others may not
         for i in range(len(send_messages)):
-            for index, msg in enumerate(send_messages[i]):
-                self.np.send_message(self.get_id(), index, msg)
-    
+            print("sending message, sender: {}, receiver: {}".format(self.get_id(), i))
+            self.np.send_message(i, send_messages[i], multi_message)
+
     def get_committed_log(self):
         return self.committed_log
 

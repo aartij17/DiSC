@@ -1,32 +1,36 @@
 import json
+from common.constants import *
+from common.signatures import create_signature
 
 
 class Message:
-    def __init__(self, r, content):
+    def __init__(self, content, r=0):
         self.content = content
         self.round = r
         self.signatures = []
 
-    def get_new_signature(self):
-        return "abc" # TODO: return pki signature consisting of actual message and round number
+    def get_new_signature(self, r, node_id, message_content):
+        return create_signature("{}-{}".format(r, node_id), message_content)
 
     def create_message(self):
-        return "{}|{}|{}".format(
+        return "{}{}{}{}{}".format(
             self.round,
+            INTRA_MESSAGE_DELIM,
             self.content,
+            INTRA_MESSAGE_DELIM,
             json.dumps(self.signatures)
         )
 
     def add_signature(self, signature):
         self.signatures.append(signature)
 
-    def create_add_signature(self):
-        signature = self.get_new_signature()
+    def create_add_signature(self, round, node_id, content):
+        signature = self.get_new_signature(round, node_id, content)
         self.add_signature(signature)
 
     @classmethod
     def get_message_elements(cls, msg):
-        split_message = msg.split("|")
+        split_message = msg.content.split(INTRA_MESSAGE_DELIM)
         return split_message
 
     @classmethod

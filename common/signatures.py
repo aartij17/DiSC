@@ -1,8 +1,6 @@
+def create_signature(key, message):
+    return "{}({})".format(key, message)
 
 
-
-def create_signature (key, message):
-    return key + "(" + message + ")"
-
-def verify_signature (key, message, tag):
-    return ((key + "(" + message + ")") == tag)
+def verify_signature(key, message, tag):
+    return "{}({})".format(key, message) == tag

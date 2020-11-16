@@ -9,9 +9,17 @@ class Main:
         # initialize number of nodes, *nwprocess
         self.num_nodes = self.num_a_nodes + self.num_h_nodes
         self.np = NetworkProcess(self.num_nodes)
-
+        f = open('input_dolev.txt', 'r')
+        lines = f.readlines()
+        for i, line in enumerate(lines):
+            self.np.prev_messages_passed[i].extend(line.split())
+        f.close()
         self.h_nodes_arr = []
         self.a_nodes_arr = []
+
+        print("---------------------storage initialized:---------------------")
+        print("pre_message_passed: {}".format(self.np.prev_messages_passed))
+        print("next_message_passed: {}".format(self.np.next_messages_passed))
 
         # initialize main with the protocol object
         self.protocol = get_protocol(protocol, self.num_a_nodes, self.num_h_nodes)
@@ -30,7 +38,7 @@ class Main:
             self.a_nodes_arr.append(a_node)
 
     def get_initialization(self):
-        return 2, 0  # nodes, stub
+        return 3, 1  # nodes, stub
 
     def start_loop(self):
         while True:
@@ -49,7 +57,7 @@ class Main:
 
             # TODO: uncomment when we have UI component
             # self.ui.update() # Might need to take in nodes, messages
-            input()
+            #input()
 
             self.np.empty_messages()
 
