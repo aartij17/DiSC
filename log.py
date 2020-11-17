@@ -26,7 +26,7 @@ class Log():
     def __getitem__(self, key):
         if key not in self.log:
             return None
-        return self.log[key].copy()
+        return self.log[key]
 
     def num_logs(self):
         return len(self.log)
