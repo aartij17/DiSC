@@ -4,6 +4,7 @@ class Log():
     def __init__(self):
         self.log = {}
     
+    
     def write(self, nodeid, value):
         if nodeid not in self.log:
             self.log[nodeid] = [ value ]
@@ -22,11 +23,3 @@ class Log():
         else:
             self.log[nodeid][index] = newval
             return True
-
-    def __getitem__(self, key):
-        if key not in self.log:
-            return None
-        return self.log[key].copy()
-
-    def num_logs(self):
-        return len(self.log)

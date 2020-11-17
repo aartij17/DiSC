@@ -6,14 +6,19 @@ import threading
 import time
 fig = plt.figure(figsize=(12, 8))
 
+from log import *
+ui_id = 1
 
 class UI:
 
-    def __init__(self, inboxes):
+    def __init__(self, data, num_nodes):
         #stub
-        self.num_nodes = len(inboxes)
-        self.inboxes = inboxes
-        self.sem = threading.Semaphore()
+        global ui_id
+
+        self.num_nodes = num_nodes
+        self.data = data
+        self.id = ui_id
+        ui_id += 1
 
     def draw(self):
         From = []
@@ -26,7 +31,7 @@ class UI:
             message_idx = 0
             NodeColors[node_name] = [1, .5, 1]
             from_node = node_name
-            for message in self.inboxes[i]:
+            for message in self.data[i]:
                 if len(message) > 0:
                     message_idx += 1
                     node_message = str(message_idx) + ":" + message
@@ -36,10 +41,6 @@ class UI:
                     To.append(node_message)
                     from_node = node_message
 
-        # print("From", From)
-        # print("To", To)
-        # print(pos)
-
         df = pd.DataFrame({'from': From,
                            'to': To})
 
@@ -48,7 +49,6 @@ class UI:
             Labels[a] = a
         for b in To:
             Labels[b] = b
-        # print("Labels", Labels)
 
         G = nx.from_pandas_edgelist(
             df, 'from', 'to', create_using=nx.DiGraph())
@@ -80,26 +80,32 @@ class UI:
                                        arrowstyle='->', width=2, arrowsizes=6)
 
     def update(self):
-        # self.sem.release()
+        plt.figure(self.id)
         plt.clf()
         self.draw()
         plt.draw()
         plt.pause(0.001)
 
     def start(self):
+        plt.figure(self.id)
         self.draw()
         plt.xlim(-1, self.num_nodes + 1)
         plt.ylim(0, 2 * self.num_nodes)
         plt.axis('off')
         plt.ion()
-        # self.sem.acquire()
         plt.show()
 
 
 if __name__ == "__main__":
+    logs = Log()
+    for i in range(4):
+        logs.write(i, "Log_" + str(i))
     inboxes = [[], [], [], []]
-    ui = UI(inboxes)
+    ui = UI(inboxes, len(inboxes))
     ui.start()
+
+    logui = UI(logs, 4)
+    logui.start()
 
     test_message_inbox = [
         ["message1", "message2", "message3", "message12"],
@@ -111,6 +117,8 @@ if __name__ == "__main__":
     for i in range(len(test_message_inbox)):
         for j in range(len(test_message_inbox[i])):
             inboxes[i].append(test_message_inbox[i][j])
+            logs.write(i, test_message_inbox[i][j])
             ui.update()
+            logui.update()
             print(inboxes)
             time.sleep(3)

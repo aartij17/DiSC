@@ -1,7 +1,7 @@
 import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
-
+from log import *
 
 plt.figure(figsize=(12, 9))
 
