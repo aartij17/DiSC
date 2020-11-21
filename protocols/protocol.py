@@ -10,5 +10,5 @@ class ProtocolBase(ABC):
         pass
     
     @abstractmethod
-    def run(self, received_messages, node_id, signatures=None, committed_messages=None):
+    def run(self, received_messages, node_id, **kwargs):
         return

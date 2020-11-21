@@ -4,34 +4,35 @@ from common.signatures import create_signature
 
 
 class Message:
-    def __init__(self, content, r=0):
+    def __init__(self, content, r=0, signatures=None):
         self.content = content
         self.round = r
-        self.signatures = []
+        self.signatures = signatures if signatures else []
 
     def get_new_signature(self, r, node_id, message_content):
         return create_signature("{}-{}".format(r, node_id), message_content)
 
-    def create_message(self):
+    @classmethod
+    def create_message(cls, round, content, signatures):
         return "{}{}{}{}{}".format(
-            self.round,
+            round,
             INTRA_MESSAGE_DELIM,
-            self.content,
+            content,
             INTRA_MESSAGE_DELIM,
-            json.dumps(self.signatures)
+            json.dumps(signatures)
         )
-
-    def add_signature(self, signature):
-        self.signatures.append(signature)
 
     def create_add_signature(self, round, node_id, content):
         signature = self.get_new_signature(round, node_id, content)
-        self.add_signature(signature)
+        self.signatures.append(signature)
 
     @classmethod
     def get_message_elements(cls, msg):
-        split_message = msg.content.split(INTRA_MESSAGE_DELIM)
-        return split_message
+        if INTRA_MESSAGE_DELIM in msg:
+            split_message = msg.split(INTRA_MESSAGE_DELIM)
+            return split_message
+        else:
+            return [msg]
 
     @classmethod
     def get_message_round(cls, msg):
@@ -39,8 +40,20 @@ class Message:
 
     @classmethod
     def get_message_content(cls, msg):
-        return cls.get_message_elements(msg)[1]
+        #print("############", msg.content)
+        return msg.content
 
     @classmethod
     def get_message_signatures(cls, msg):
-        return json.loads(cls.get_message_elements(msg)[2])
+        return msg.signatures
+
+    @classmethod
+    def get_message_object(cls, msg):
+        message_elements = msg.split(INTRA_MESSAGE_DELIM)
+        signatures = json.loads(message_elements[2])
+        new_msg_obj = Message(
+            message_elements[1],
+            r=message_elements[0],
+            signatures=signatures
+        )
+        return new_msg_obj
