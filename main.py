@@ -38,10 +38,11 @@ class Main:
             self.a_nodes_arr.append(a_node)
 
     def get_initialization(self):
-        return 3, 1  # nodes, stub
+        return 2, 1  # nodes, stub
 
     def start_loop(self):
-        while True:
+        counter = 0
+        while counter < 3:
             # iterate through each node and run protocol
             for i in range(self.num_h_nodes):
                 self.h_nodes_arr[i].run_protocol_one_round()
@@ -60,6 +61,7 @@ class Main:
             #input()
 
             self.np.empty_messages()
+            counter += 1
 
 
 if __name__ == '__main__':
