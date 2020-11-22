@@ -3,6 +3,9 @@ from common.utils import *
 from network_process import NetworkProcess
 from ui.networkui import NetworkUI
 from node import Node
+import os
+import datetime
+import json
 
 
 class Main:
@@ -47,7 +50,19 @@ class Main:
         next_ui = NetworkUI(self.np.next_messages_passed, len(self.np.next_messages_passed))
         prev_ui.start()
         next_ui.start()
-        while True: #counter < 3:
+
+        directory_name = './run_' + str(datetime.datetime.now())
+        os.mkdir(directory_name)
+        f_states = open(directory_name + "/state_dump.txt", 'w')
+        f_np = open(directory_name + "/np_dump.txt", 'w')
+        f_conf = open(directory_name + "/config_dump.txt", 'w')
+        f_conf.write(json.dumps({
+            'Honest nodes': len(self.h_nodes_arr),
+            'Adversary nodes': len(self.a_nodes_arr),
+            'Protocol': self.protocol.get_protocol_name()
+        }))
+        f_conf.close()
+        while True:  # counter < 3:
             user_input = input("enter q to exit") # TODO: use a user-hint to q
             if user_input == 'q':
                 return
@@ -71,15 +86,25 @@ class Main:
             #input()
             prev_ui.replace_data(self.np.prev_messages_passed, len(self.np.prev_messages_passed))
             prev_ui.update()
-
             next_ui.replace_data(self.np.next_messages_passed, len(self.np.next_messages_passed))
             next_ui.update()
+            
+            f_np.write(str(counter) + "|PrevMessages|" + json.dumps(self.np.prev_messages_passed) + "\n")
+            f_np.write(str(counter) + "|NextMessages|" + json.dumps(self.np.next_messages_passed) + "\n")
 
             self.np.empty_messages()
             counter += 1
 
+            for node in self.h_nodes_arr:
+                f_states.write(str(counter) + "|" + str(node.get_id()) + "|" + node.dump_state() + "\n")
+            
+            for node in self.a_nodes_arr:
+                f_states.write(str(counter) + "|" + str(node.get_id()) + "|" + node.dump_state() + "\n")
 
 
+        f_states.close()
+        f_np.close()
+    
 if __name__ == '__main__':
     # TODO: this is hard-coded for now, make this a user-input
     protocol_chosen = DOLEV_STRONG_PROTOCOL

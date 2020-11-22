@@ -149,3 +149,5 @@ class DolevStrong(ProtocolBase):
     #         return [], False, True
     #     else:
     #         return [], False, False
+    def get_protocol_name(self) -> str:
+        return DOLEV_STRONG_PROTOCOL

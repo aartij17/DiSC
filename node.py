@@ -1,3 +1,11 @@
+import json
+
+class SetEncoder(json.JSONEncoder):
+    def default(self, obj):
+       if isinstance(obj, set):
+          return list(obj)
+       return json.JSONEncoder.default(self, obj)
+
 class Node:
     def __init__(self, node_id, protocol, np, log, adversary=False):
         self.state = {}
@@ -48,3 +56,7 @@ class Node:
     def adversary_actions(self):
         # stub
         pass
+
+    
+    def dump_state(self):
+        return json.dumps(self.state, cls=SetEncoder)

@@ -16,3 +16,7 @@ class ProtocolBase(ABC):
     @abstractmethod
     def init_state(self, state):
         return
+    
+    @abstractmethod
+    def get_protocol_name(self) -> str:
+        return
