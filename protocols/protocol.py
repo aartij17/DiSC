@@ -10,5 +10,9 @@ class ProtocolBase(ABC):
         pass
     
     @abstractmethod
-    def run(self, received_messages, node_id, **kwargs):
+    def run_protocol_one_round(self, state, np, log):
+        return
+
+    @abstractmethod
+    def init_state(self, state):
         return

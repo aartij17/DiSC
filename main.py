@@ -1,3 +1,4 @@
+from common.log import *
 from common.utils import *
 from network_process import NetworkProcess
 from node import Node
@@ -24,17 +25,16 @@ class Main:
         # initialize main with the protocol object
         self.protocol = get_protocol(protocol, self.num_a_nodes, self.num_h_nodes)
 
-        # TODO: uncomment when we have a UI component
-        # self.ui = ui()
+        self.log = Log()
 
         # initialize honest nodes
         for i in range(self.num_h_nodes):
-            h_node = Node(i, self.protocol, self.np)
+            h_node = Node(i, self.protocol, self.np, self.log)
             self.h_nodes_arr.append(h_node)
 
         # initialize adversary nodes
         for i in range(self.num_a_nodes):
-            a_node = Node(i + self.num_h_nodes, self.protocol, self.np, adversary=True)
+            a_node = Node(i + self.num_h_nodes, self.protocol, self.np, self.log, adversary=True)
             self.a_nodes_arr.append(a_node)
 
     def get_initialization(self):
@@ -42,9 +42,14 @@ class Main:
 
     def start_loop(self):
         counter = 0
-        while counter < 3:
+        while True: #counter < 3:
+            user_input = input("enter q to exit") # TODO: use a user-hint to q
+            if user_input == 'q':
+                return
+
             # iterate through each node and run protocol
             for i in range(self.num_h_nodes):
+                #self.protocol.run_protocol_one_round()
                 self.h_nodes_arr[i].run_protocol_one_round()
 
             for i in range(self.num_a_nodes):
@@ -54,7 +59,7 @@ class Main:
             for i in range(self.num_a_nodes):
                 self.a_nodes_arr[i].adversary_actions()
 
-            self.protocol.round += 1
+            #self.protocol.round += 1
 
             # TODO: uncomment when we have UI component
             # self.ui.update() # Might need to take in nodes, messages
@@ -62,6 +67,7 @@ class Main:
 
             self.np.empty_messages()
             counter += 1
+
 
 
 if __name__ == '__main__':
