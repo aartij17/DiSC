@@ -57,3 +57,8 @@ class Message:
             signatures=signatures
         )
         return new_msg_obj
+
+    @classmethod
+    def copy_message(cls, msg):
+        cpy_msg = Message(msg.content, msg.round, msg.signatures.copy())
+        return cpy_msg

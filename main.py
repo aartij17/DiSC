@@ -1,6 +1,7 @@
 from common.log import *
 from common.utils import *
 from network_process import NetworkProcess
+from ui.networkui import NetworkUI
 from node import Node
 
 
@@ -42,6 +43,10 @@ class Main:
 
     def start_loop(self):
         counter = 0
+        prev_ui = NetworkUI(self.np.prev_messages_passed, len(self.np.prev_messages_passed))
+        next_ui = NetworkUI(self.np.next_messages_passed, len(self.np.next_messages_passed))
+        prev_ui.start()
+        next_ui.start()
         while True: #counter < 3:
             user_input = input("enter q to exit") # TODO: use a user-hint to q
             if user_input == 'q':
@@ -64,6 +69,11 @@ class Main:
             # TODO: uncomment when we have UI component
             # self.ui.update() # Might need to take in nodes, messages
             #input()
+            prev_ui.replace_data(self.np.prev_messages_passed, len(self.np.prev_messages_passed))
+            prev_ui.update()
+
+            next_ui.replace_data(self.np.next_messages_passed, len(self.np.next_messages_passed))
+            next_ui.update()
 
             self.np.empty_messages()
             counter += 1
