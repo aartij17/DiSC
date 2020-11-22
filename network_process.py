@@ -8,7 +8,6 @@ class NetworkProcess:
         self.prev_messages_passed = []
         self.next_messages_passed = []
 
-        # [ [] [] [] [] ]
         for i in range(num_nodes):
             self.prev_messages_passed.append([])
             self.next_messages_passed.append([])

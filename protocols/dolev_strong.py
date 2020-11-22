@@ -6,7 +6,7 @@ from message import Message
 from protocols.protocol import ProtocolBase
 
 FIRST_DOLEV_STRONG_MESSAGE = 1
-SIG_KEY_FORMAT = "Key:{}-{}"
+SIG_KEY_FORMAT = "Key:{}"
 
 def create_message_objects(messages):
     message_obj_list = []
@@ -16,10 +16,17 @@ def create_message_objects(messages):
 
 
 def verify_message_signatures(round, node_id, msg_obj):
-    key = "{}-{}".format(round, node_id)
-    # TODO: [Aarti]: We need to come up with another convention for the signatures. Probably with just round and message_content?
-    # cause right now, we don't know what the node_id for each of the signatures in the signatures list would be.
-    return verify_signature(key, msg_obj.content, msg_obj.signatures)
+    if len(msg_obj.signatures) != round:
+        return False
+    for s in msg_obj.signatures:
+        key = SIG_KEY_FORMAT.format(node_id)
+        if not verify_signature(key, msg_obj.content, s):
+            return False
+    return True
+
+    # # TODO: [Aarti]: We need to come up with another convention for the signatures. Probably with just round and message_content?
+    # # cause right now, we don't know what the node_id for each of the signatures in the signatures list would be.
+    # return verify_signature(key, msg_obj.content, msg_obj.signatures)
 
 
 class DolevStrong(ProtocolBase):
@@ -45,7 +52,7 @@ class DolevStrong(ProtocolBase):
                                                                                               state["node_id"]))
         if state["round"] == 0 and state["node_id"] == 0:
             new_message = Message(FIRST_DOLEV_STRONG_MESSAGE, state["round"])
-            new_message.create_add_signature(SIG_KEY_FORMAT.format(state["round"], state["node_id"]),
+            new_message.create_add_signature(SIG_KEY_FORMAT.format(state["node_id"]),
                                              FIRST_DOLEV_STRONG_MESSAGE)
 
             print("returning, since round=0", [FIRST_DOLEV_STRONG_MESSAGE] * (self.num_faulty_nodes
@@ -70,7 +77,6 @@ class DolevStrong(ProtocolBase):
                 # TODO: check signature validity and add the content to valid_rcvd_msg_content
                 # if log[state["node_id"]] is not None and rcvd_msg_content in log[state["node_id"]]:
                 if rcvd_msg_content in state["extracted_set"]:  # log[state["node_id"]]:
-                    # print("*** CONTINUE!***")
                     continue
                 valid_rcvd_msg_content.append(rcvd_msg_content)
                 state["extracted_set"].add(rcvd_msg_content)
@@ -81,7 +87,7 @@ class DolevStrong(ProtocolBase):
             join_broadcast_message = MESSAGES_PER_NODE_DELIM.join(valid_rcvd_msg_content)
             for msg_obj in send_messages:
                 msg_obj.content = join_broadcast_message
-                msg_obj.create_add_signature(SIG_KEY_FORMAT.format(state["round"], state["node_id"]), msg_obj.content)
+                msg_obj.create_add_signature(SIG_KEY_FORMAT.format(state["node_id"]), msg_obj.content)
 
             for msg_obj in send_messages:
                 prepared_send_messages.append(msg_obj.create_message(msg_obj.round,
