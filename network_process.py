@@ -31,7 +31,7 @@ class NetworkProcess:
                                                               message_elements[1],  # content
                                                               message_elements[2]))  # signatures
 
-        print("messages sent out: {}", format(messages_to_be_sent))
+        print("messages sent out by network process: {}", format(messages_to_be_sent))
         for m in messages_to_be_sent:
             if len(self.next_messages_passed[receive_node_id]) == 0:
                 self.next_messages_passed[receive_node_id] = [m]

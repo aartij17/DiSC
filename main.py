@@ -38,7 +38,7 @@ class Main:
             self.a_nodes_arr.append(a_node)
 
     def get_initialization(self):
-        return 2, 1  # nodes, stub
+        return 4, 2  # nodes, stub
 
     def start_loop(self):
         counter = 0

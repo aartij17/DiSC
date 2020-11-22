@@ -9,8 +9,8 @@ class Message:
         self.round = r
         self.signatures = signatures if signatures else []
 
-    def get_new_signature(self, r, node_id, message_content):
-        return create_signature("{}-{}".format(r, node_id), message_content)
+    # def get_new_signature(self, r, node_id, message_content):
+    #     return create_signature("{}-{}".format(r, node_id), message_content)
 
     @classmethod
     def create_message(cls, round, content, signatures):
@@ -22,8 +22,8 @@ class Message:
             json.dumps(signatures)
         )
 
-    def create_add_signature(self, round, node_id, content):
-        signature = self.get_new_signature(round, node_id, content)
+    def create_add_signature(self, key, content):
+        signature = create_signature(key, content)
         self.signatures.append(signature)
 
     @classmethod
