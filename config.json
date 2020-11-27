@@ -1,0 +1,5 @@
+{
+  "protocol": "DolevStrong",
+  "honest_nodes": 4,
+  "adversary_nodes": 2
+}

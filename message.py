@@ -40,7 +40,7 @@ class Message:
 
     @classmethod
     def get_message_content(cls, msg):
-        #print("############", msg.content)
+        # print("############", msg.content)
         return msg.content
 
     @classmethod

@@ -4,6 +4,7 @@ import matplotlib.animation as anim
 import matplotlib.pyplot as plt
 import threading
 import time
+
 fig = plt.figure(figsize=(12, 8))
 
 ui_id = 1
@@ -12,7 +13,7 @@ ui_id = 1
 class NetworkUI:
 
     def __init__(self, data, num_nodes):
-        #stub
+        # stub
         global ui_id
 
         self.num_nodes = num_nodes
@@ -78,7 +79,7 @@ class NetworkUI:
 
         edges = nx.draw_networkx_edges(G, pos,
                                        node_size=1.8e3,
-                                       arrowstyle='->', width=2, arrowsizes=6)
+                                       arrowstyle='->', width=2)  # , arrowsizes=6)
 
     def replace_data(self, new_data, new_num_nodes):
         self.data = new_data
@@ -107,7 +108,7 @@ if __name__ == "__main__":
     #     logs.write(i, "Log_" + str(i))
     inboxes = [[], [], [], []]
 
-    ui = UI(inboxes, len(inboxes))
+    ui = NetworkUI(inboxes, len(inboxes))
     ui.start()
 
     # logui = UI(logs, 4)

@@ -2,3 +2,5 @@ __pycache__
 dump.txt
 run_*
 decode_test.py
+scrap.py
+custom
