@@ -5,3 +5,4 @@ decode_test.py
 scrap.py
 custom
 node_modules
+.eslintcache
