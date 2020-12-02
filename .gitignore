@@ -6,3 +6,4 @@ scrap.py
 custom
 node_modules
 .eslintcache
+.DS_Store

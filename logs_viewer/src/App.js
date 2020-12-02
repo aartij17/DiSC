@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import StateLogCard from './components/StateLogCard';
+import LogCard from './components/LogCard';
 import { useRef, useState } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -11,33 +12,34 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 function App() {
   const [stateLogFile, setStateLogFile] = useState(null);
+  const [networkLogFile, setNetworkLogFile] = useState(null);
   const [stateLogs, setStateLogs] = useState([]);
+  const [networkLogs, setNetworkLogs] = useState([]);
 
-  const updateLogDisplay = (content) => {
+  const updateLogDisplay = (content, setStateFunc) => {
     var newLogs = [];
     var log_lines = content.split("\n");
     for (var i = 0; i < log_lines.length; ++i) {
-      console.log(log_lines[i]);
       // First, get the round number
       const log_components = log_lines[i].split("|")
       if (log_components.length < 3) {
         continue;
       }
       const round = log_components[0];
-      const nodeid = log_components[1];
+      const id = log_components[1];
       log_components.splice(0,2);
       const state = log_components.join();
       // console.log(state);
       // console.log(JSON.parse(state));
       newLogs.push(
-        <StateLogCard 
+        <LogCard 
           round={round}
-          nodeid={nodeid}
+          id={id}
           state={JSON.parse(state)}
         />
       );
     }
-    setStateLogs(newLogs);
+    setStateFunc(newLogs);
   }
 
   const readFileContent = file => {
@@ -50,47 +52,51 @@ function App() {
   }
 
   // On file select (from the pop up) 
-  const onFileChange = event => {
+  const onLogFileChange = event => {
     // Update the state 
     setStateLogFile(event.target.files[0]);
   }; 
 
-  // On file upload (click the upload button) 
-  const onFileUpload = () => {
+  const onNetworkFileChange = event => {
+    setNetworkLogFile(event.target.files[0]);
+  }
 
-    if (stateLogFile && stateLogFile.type == "text/plain") {
+  // On file upload (click the upload button) 
+  const onFileUpload = (logfile, setStateFunc) => {
+
+    if (logfile && logfile.type == "text/plain") {
       // // Create an object of formData 
       // const formData = new FormData();
 
       // // Update the formData object 
       // formData.append(
       //   "myFile",
-      //   stateLogFile,
-      //   stateLogFile.name
+      //   logfile,
+      //   logfile.name
       // );
       // Details of the uploaded file 
-      console.log(stateLogFile);
+      console.log(logfile);
       // console.log(formData);
-      readFileContent(stateLogFile).then(content => {
-        updateLogDisplay(content)
+      readFileContent(logfile).then(content => {
+        updateLogDisplay(content, setStateFunc)
       }).catch(error => console.log(error))
     }
 
 
   }; 
 
-  const fileData = () => {
-
-    if (stateLogFile) {
+  const fileData = (logfile) => {
+    console.log(logfile);
+    if (logfile) {
 
       return (
         <div>
           <h2>File Details:</h2>
-          <p>File Name: {stateLogFile.name}</p>
-          <p>File Type: {stateLogFile.type}</p>
+          <p>File Name: {logfile.name}</p>
+          <p>File Type: {logfile.type}</p>
           <p>
             Last Modified:{" "}
-            {stateLogFile.lastModifiedDate.toDateString()}
+            {logfile.lastModifiedDate.toDateString()}
           </p>
         </div>
       );
@@ -109,21 +115,27 @@ function App() {
       <Container>
         <Row>
           <Col>
-            <input type="file" onChange={onFileChange} />
-              <button onClick={onFileUpload}>
+            <input type="file" onChange={onLogFileChange} />
+            <button onClick={() => onFileUpload(stateLogFile, setStateLogs)}>
                 Upload State Log
               </button> 
-            {fileData()}
+            {fileData(stateLogFile)}
           </Col>
-          <Col><Button variant="outline-primary">Upload Network Process Log</Button></Col>
+          <Col>
+            <input type="file" onChange={onNetworkFileChange} />
+            <button onClick={() => onFileUpload(networkLogFile, setNetworkLogs)}>
+              Upload Network Log
+              </button>
+            {fileData(networkLogFile)}
+          </Col>
         </Row>
+
         <Row>
           <Col>
             {stateLogs}
           </Col>
           <Col>
-            
-            <StateLogCard />
+            {networkLogs}
           </Col>
         </Row>
       </Container>

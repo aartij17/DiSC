@@ -2,20 +2,20 @@ import React from 'react';
 import { Component } from 'react';
 import Card from 'react-bootstrap/Card';
 
-class StateLogCard extends Component {
+class LogCard extends Component {
     constructor(props) {
         super(props);
 
         this.formatState = this.formatState.bind(this);
     }
-    
+
     formatState() {
         var stateInfo = [];
         if (this.props.state) {
             for (var key in this.props.state) {
                 // check if the property/key is defined in the object itself, not in parent
                 if (this.props.state.hasOwnProperty(key)) {
-                    stateInfo.push(<div className="row">{key + " : " + this.props.state[key]}</div> )
+                    stateInfo.push(<div className="row">{key + " : " + this.props.state[key]}</div>)
                 }
             }
         }
@@ -27,7 +27,7 @@ class StateLogCard extends Component {
             <Card style={{ width: '100%' }}>
                 <Card.Body>
                     <Card.Title>Round {this.props.round}</Card.Title>
-                    <Card.Title>Node ID: {this.props.nodeid}</Card.Title>
+                    <Card.Title>ID: {this.props.id}</Card.Title>
                     <Card.Text>
                         {this.formatState()}
                     </Card.Text>
@@ -38,4 +38,4 @@ class StateLogCard extends Component {
     }
 }
 
-export default StateLogCard;
+export default LogCard;
