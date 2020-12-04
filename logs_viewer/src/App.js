@@ -1,6 +1,8 @@
 import logo from './logo.svg';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
+import InputGroup from 'react-bootstrap/InputGroup'
+import FormControl from 'react-bootstrap/FormControl'; 
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import StateLogCard from './components/StateLogCard';
@@ -15,6 +17,8 @@ function App() {
   const [networkLogFile, setNetworkLogFile] = useState(null);
   const [stateLogs, setStateLogs] = useState([]);
   const [networkLogs, setNetworkLogs] = useState([]);
+  const [stateLogFilter, setStateLogfilter] = useState({});
+  const [networkLogFilter, setNetworkLogfilter] = useState({});
 
   const updateLogDisplay = (content, setStateFunc) => {
     var newLogs = [];
@@ -31,12 +35,11 @@ function App() {
       const state = log_components.join();
       // console.log(state);
       // console.log(JSON.parse(state));
-      newLogs.push(
-        <LogCard 
-          round={round}
-          id={id}
-          state={JSON.parse(state)}
-        />
+      newLogs.push( {
+        "round": "" + round,
+        "id": "" + id,
+        "state": JSON.parse(state)
+      }
       );
     }
     setStateFunc(newLogs);
@@ -59,6 +62,45 @@ function App() {
 
   const onNetworkFileChange = event => {
     setNetworkLogFile(event.target.files[0]);
+  }
+
+  const handleFilterChange = (e, key, original_dict, setterFunc) => {
+    var new_dict = JSON.parse(JSON.stringify(original_dict))
+    console.log(e.target.value, typeof(e.target.value))
+    if (e.target.value.length == 0) {
+      if (new_dict.hasOwnProperty(key)) {
+        delete new_dict[key];
+      }
+    }
+    else {
+      new_dict[key] = e.target.value;
+    }
+    setterFunc(new_dict)
+  }
+
+  const cardDisplay = (logs, filter) => {
+    // Only display the cards that are not filtered out
+    var displayedCards = [];
+    for (var i = 0; i < logs.length; ++i) {
+      const round = logs[i]["round"];
+      const id = logs[i]["id"];
+      const state = logs[i]["state"];
+      if ((!("round" in filter) || 
+          (round.length >= filter["round"].length && filter["round"] == round.substring(0, filter["round"].length))) 
+          && 
+          (!("id" in filter) || 
+          (id.length >= filter["id"].length && filter["id"] == id.substring(0, filter["id"].length))) ) {
+        displayedCards.push(
+          <LogCard
+            round={round}
+            id={id}
+            state={state}
+          />
+        );
+      }
+    }
+
+    return displayedCards;
   }
 
   // On file upload (click the upload button) 
@@ -86,7 +128,6 @@ function App() {
   }; 
 
   const fileData = (logfile) => {
-    console.log(logfile);
     if (logfile) {
 
       return (
@@ -129,13 +170,72 @@ function App() {
             {fileData(networkLogFile)}
           </Col>
         </Row>
+        <Row>
+          <Col>
+            <InputGroup className="mb-3">
+              <InputGroup.Prepend>
+                <InputGroup.Text id="basic-addon1">Round</InputGroup.Text>
+              </InputGroup.Prepend>
+              <FormControl
+                placeholder="Round"
+                aria-label="Round"
+                aria-describedby="basic-addon1"
+                onChange={(e) => { handleFilterChange(e, "round", stateLogFilter, setStateLogfilter) }}
+                type="number"
+              />
+            </InputGroup>
+          </Col>
+          <Col>
+            <InputGroup className="mb-3">
+              <InputGroup.Prepend>
+                <InputGroup.Text id="basic-addon1">Round</InputGroup.Text>
+              </InputGroup.Prepend>
+              <FormControl
+                placeholder="Round"
+                aria-label="Round"
+                aria-describedby="basic-addon1"
+                onChange={(e) => { handleFilterChange(e, "round", networkLogFilter, setNetworkLogfilter) }}
+                type="number"
+              />
+            </InputGroup>
+          </Col>
+        </Row>
 
         <Row>
           <Col>
-            {stateLogs}
+            <InputGroup className="mb-3">
+              <InputGroup.Prepend>
+                <InputGroup.Text id="basic-addon1">ID</InputGroup.Text>
+              </InputGroup.Prepend>
+              <FormControl
+                placeholder="ID"
+                aria-label="ID"
+                aria-describedby="basic-addon1"
+                onChange={(e) => { handleFilterChange(e, "id", stateLogFilter, setStateLogfilter) }}
+              />
+            </InputGroup>
           </Col>
           <Col>
-            {networkLogs}
+            <InputGroup className="mb-3">
+              <InputGroup.Prepend>
+                <InputGroup.Text id="basic-addon1">ID</InputGroup.Text>
+              </InputGroup.Prepend>
+              <FormControl
+                placeholder="ID"
+                aria-label="ID"
+                aria-describedby="basic-addon1"
+                onChange={(e) => { handleFilterChange(e, "id", networkLogFilter, setNetworkLogfilter) }}
+              />
+            </InputGroup>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col>
+            {cardDisplay(stateLogs, stateLogFilter)}
+          </Col>
+          <Col>
+            {cardDisplay(networkLogs, networkLogFilter)}
           </Col>
         </Row>
       </Container>
