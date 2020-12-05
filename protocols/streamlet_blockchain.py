@@ -1,11 +1,14 @@
 
 from common.constants import *
+from common.hash import hash_function
 
-STREAMLETBLOCKDELIMITER = "`"
+STREAMLETBLOCKDELIMITER = ","
 
 class StreamletBlockchain:
 
     #TODO to string
+    
+    
 
     def __init__(self):
         self.blockchain_top = []
@@ -15,7 +18,7 @@ class StreamletBlockchain:
         self.blockchain_top.append (initialblock)
         self.blockchain_all.append (initialblock)
         
-    def append_to_blockchain (prev_hash, epoch_num, transactions):
+    def append_to_blockchain (self, prev_hash, epoch_num, transactions):
         for block in self.blockchain_all:
             if (prev_hash == StreamletBlock.block_hash(block)):
                 b = StreamletBlock (block, prev_hash, epoch_num, transactions)
@@ -88,9 +91,9 @@ class StreamletBlockchain:
         block_list = []
         for block in self.blockchain_top:
             depth = block.depth()
-            if (depth = largest_depth):
+            if (depth == largest_depth):
                 block_list.append (block)
-        
+        return block_list
         
 class StreamletBlock:
 
@@ -141,18 +144,18 @@ class StreamletBlock:
         )
         
     def depth(self):
-        if epoch_num < 0:
+        if self.epoch_num < 0:
             return 1
         else:
             return self.prev_block.depth()
         
     @staticmethod
     def block_hash(block):
-        return hash.hash_function(block.stringify)
+        return hash_function(block.stringify())
         
     @classmethod
     def create_initial(cls):
-        return cls(NULL, "null", -2, "None")
+        return cls(None, "null", -2, "None")
         
     @staticmethod
     def static_destringify(string):

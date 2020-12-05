@@ -7,6 +7,7 @@ class ProtocolBase(ABC):
         self.round = 0
         self.num_faulty_nodes = num_faulty_nodes
         self.num_honest_nodes = num_honest_nodes
+        self.num_nodes = self.num_faulty_nodes + self.num_honest_nodes
         pass
     
     @abstractmethod

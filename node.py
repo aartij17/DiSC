@@ -5,6 +5,13 @@ class SetEncoder(json.JSONEncoder):
        if isinstance(obj, set):
           return list(obj)
        return json.JSONEncoder.default(self, obj)
+       
+def is_jsonable(x):
+    try:
+        json.dumps(x)
+        return True
+    except:
+        return False
 
 class Node:
     def __init__(self, node_id, protocol, np, log, adversary=False):
@@ -59,4 +66,9 @@ class Node:
 
     
     def dump_state(self):
-        return json.dumps(self.state, cls=SetEncoder)
+        tmp_state = {}
+        for key in self.state: # Fix
+            value = self.state[key]
+            if is_jsonable(value):
+                tmp_state[key] = value
+        return json.dumps(tmp_state)

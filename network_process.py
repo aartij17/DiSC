@@ -22,13 +22,14 @@ class NetworkProcess:
         message_elements = Message.get_message_elements(message)
         messages_to_be_sent = []
         if multi_message:
-            messages_for_one_node = message_elements[1].split(MESSAGES_PER_NODE_DELIM)
+            messages_for_one_node = message_elements[2].split(MESSAGES_PER_NODE_DELIM)
         else:
-            messages_for_one_node = message_elements[1]
+            messages_for_one_node = [message_elements[2]]
         for m in messages_for_one_node:
             messages_to_be_sent.append(Message.create_message(message_elements[0],  # round
+                                                              message_elements[1], # sender_id
                                                               m,  # content
-                                                              message_elements[2]))  # signatures
+                                                              message_elements[3]))  # signatures
 
         print("messages sent out by network process: {}", format(messages_to_be_sent))
         for m in messages_to_be_sent:
