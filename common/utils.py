@@ -15,3 +15,5 @@ def get_protocol(protocol, num_faulty_nodes, num_honest_nodes):
         return DoNothingAdversary(num_faulty_nodes, num_honest_nodes)
     elif protocol == ADVERSARY_RANDOMBROADCAST_PROTOCOL:
         return RandomBroadcastAdversary(num_faulty_nodes, num_honest_nodes)
+    elif protocol == DOLEV_STRONG_ADVERSARY:
+        return DolevStrongAdversary(num_faulty_nodes, num_honest_nodes)

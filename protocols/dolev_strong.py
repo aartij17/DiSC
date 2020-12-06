@@ -54,7 +54,7 @@ class DolevStrong(ProtocolBase):
 
             print("returning, since round=0", [FIRST_DOLEV_STRONG_MESSAGE] * (self.num_faulty_nodes
                                                                               + self.num_honest_nodes))
-            send_messages = [Message.create_message(new_message.round, new_message.content, new_message.signatures)] * \
+            send_messages = [Message.create_message(new_message.round, state["node_id"], new_message.content, new_message.signatures)] * \
                             (self.num_faulty_nodes + self.num_honest_nodes)
             np.send_messages(send_messages, False)
 
