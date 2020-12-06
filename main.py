@@ -38,7 +38,8 @@ class Main:
 
         # initialize adversary nodes
         for i in range(self.num_a_nodes):
-            a_node = Node(i + self.num_h_nodes, self.protocol, self.np, self.log, adversary=True)
+            adversary_protocol = get_protocol(config_blob["adversary_nodes"][i], self.num_a_nodes, self.num_h_nodes)
+            a_node = Node(i + self.num_h_nodes, adversary_protocol, self.np, self.log, adversary=True)
             self.a_nodes_arr.append(a_node)
 
     def start_loop(self):
@@ -108,7 +109,7 @@ class Main:
             adversary_nodes = int(adversary_nodes)
         else:
             honest_nodes = int(config_blob["honest_nodes"])
-            adversary_nodes = int(config_blob["adversary_nodes"])
+            adversary_nodes = len(config_blob["adversary_nodes"])
 
         if adversary_nodes > honest_nodes:
             print("Adversary nodes cannot be more than honest nodes to achieve consensus, exiting now")

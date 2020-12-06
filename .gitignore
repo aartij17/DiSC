@@ -4,3 +4,4 @@ run_*
 decode_test.py
 scrap.py
 custom
+.DS_Store
