@@ -31,13 +31,14 @@ class NetworkUI:
             sender_node_name = "Sender: Node " + str(i)
             pos[sender_node_name] = (i, 1)
             message_idx = 0
-            NodeColors[node_name] = [1, .5, 1]
+            NodeColors[sender_node_name] = [1, .5, 1]
             for j in range(len(self.data[i])):
                 message = self.data[i][j]
                 if len(message) > 0:
                     receiver_node_name = "Receiver: Node " + str(j)
                     if receiver_node_name not in pos:
                         pos[receiver_node_name] = (j, 3)
+                        NodeColors[receiver_node_name] = [1, .5, 1]
                         
                     message_idx += 1
                     NodeColors[message] = [1, 1, 0]
