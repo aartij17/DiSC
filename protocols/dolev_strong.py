@@ -18,8 +18,12 @@ def create_message_objects(messages):
 
 def verify_message_signatures(round, node_id, msg_obj):
     if len(msg_obj.signatures) != round:
+        print(msg_obj.signatures)
+        print("VERIFY_MESSAGE_SIG:, num_sig{} != round{}".format(len(msg_obj.signatures), round))
         return False
+    print("SIGNATURES: {}".format(type(msg_obj.signatures)))
     for s in msg_obj.signatures:
+        print("S::: {}".format(s))
         key = SIG_KEY_FORMAT.format(node_id)
         if not verify_signature(key, msg_obj.content, s):
             return False
@@ -56,7 +60,7 @@ class DolevStrong(ProtocolBase):
                                                                               + self.num_honest_nodes))
             send_messages = [Message.create_message(new_message.round, state["node_id"], new_message.content, new_message.signatures)] * \
                             (self.num_faulty_nodes + self.num_honest_nodes)
-            np.send_messages(send_messages, False)
+            np.send_messages(send_messages, False) ## list of strings
 
         elif 1 <= state["round"] < (self.num_faulty_nodes + 1):
             send_messages = []
@@ -68,7 +72,7 @@ class DolevStrong(ProtocolBase):
             for i, rcvd_msg_obj in enumerate(rcvd_message_objects):
                 print("index {} of rcvd_message_objects".format(i))
                 rcvd_msg_content = Message.get_message_content(rcvd_msg_obj)
-
+                print("rcvd_msg_obj:: {}::{}".format(rcvd_msg_obj.signatures, type(rcvd_msg_obj.signatures)))
                 verified = verify_message_signatures(state["round"], state["node_id"], rcvd_msg_obj)
                 if not verified:
                     print("Invalid signature found, terminating the protocol run")
@@ -78,7 +82,6 @@ class DolevStrong(ProtocolBase):
                     continue
                 valid_rcvd_msg_content.append(rcvd_msg_content)
                 state["extracted_set"].add(rcvd_msg_content)
-                # log.write(state["node_id"], rcvd_msg_content)
                 new_message = Message("", state["round"])
                 send_messages.append(new_message)
             print(valid_rcvd_msg_content)
@@ -93,10 +96,8 @@ class DolevStrong(ProtocolBase):
                                                                      msg_obj.signatures))
 
             np.send_messages(prepared_send_messages, True)
-        # else:
-        #     print("Something's off!")
 
-        print("State: {}, extracted_set: {}".format(state, state["extracted_set"]))
+
         state["round"] = state["round"] + 1
         if state["round"] + 1 == self.num_faulty_nodes + 2:
             if len(state["extracted_set"]) == 1:
@@ -106,10 +107,13 @@ class DolevStrong(ProtocolBase):
                 print("Failure to achieve Consensus output: {}".format(0))
             # TODO: Right now, we just exit out from here. Gotta see what to do here when the input is from the file
             sys.exit(0)
+        print("state updated:: {}".format(state["round"]))
 
     def init_state(self, state):
         state["round"] = 0
         state["extracted_set"] = set()
+        state["known_signatures"] = []
+
 
     def get_protocol_name(self) -> str:
         return DOLEV_STRONG_PROTOCOL

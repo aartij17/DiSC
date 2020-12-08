@@ -9,7 +9,7 @@ class ProtocolBase(ABC):
         self.num_honest_nodes = num_honest_nodes
         self.num_nodes = self.num_faulty_nodes + self.num_honest_nodes
         pass
-    
+
     @abstractmethod
     def run_protocol_one_round(self, state, np, log):
         return
@@ -17,7 +17,7 @@ class ProtocolBase(ABC):
     @abstractmethod
     def init_state(self, state):
         return
-    
+
     @abstractmethod
     def get_protocol_name(self) -> str:
         return
