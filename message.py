@@ -72,7 +72,7 @@ class Message:
             message_elements[2],
             message_elements[1],
             r=message_elements[0],
-            signatures=json.loads(signatures)
+            signatures=signatures
         )
         return new_msg_obj
 
