@@ -27,7 +27,7 @@ class Message:
 
     @classmethod
     def create_message(cls, round, sender_id, content, signatures):
-        return "{}{}{}{}{}{}".format(
+        return "{}{}{}{}{}{}{}".format(
             round,
             INTRA_MESSAGE_DELIM,
             sender_id,
