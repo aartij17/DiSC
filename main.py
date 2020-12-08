@@ -49,11 +49,13 @@ class Main:
         prev_ui.start()
         next_ui.start()
 
-        directory_name = './run_' + str(datetime.datetime.now())
-        os.mkdir(directory_name)
-        f_states = open(directory_name + "/state_dump.txt", 'w')
-        f_np = open(directory_name + "/np_dump.txt", 'w')
-        f_conf = open(directory_name + "/config_dump.txt", 'w')
+        current_path = os.getcwd()
+        directory_name =  os.path.join(current_path, 'run_' + str(datetime.datetime.now()))
+        os.makedirs(directory_name)
+        
+        f_states = open(os.path.join(directory_name,"state_dump.txt"), 'w')
+        f_np = open(os.path.join(directory_name, "np_dump.txt"), 'w')
+        f_conf = open(os.path.join(directory_name,"config_dump.txt"), 'w')
         f_conf.write(json.dumps({
             'Honest nodes': len(self.h_nodes_arr),
             'Adversary nodes': len(self.a_nodes_arr),

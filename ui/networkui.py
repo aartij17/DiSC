@@ -44,10 +44,10 @@ class NetworkUI:
                     NodeColors[message] = [1, 1, 0]
                     if message not in pos:
                         pos[message] = (message_idx, 2)
-                    From.append(recv_node_name)
+                    From.append(sender_node_name)
                     To.append(message)
                     From.append(message)
-                    To.append(sender_node_name)
+                    To.append(recv_node_name)
 
         df = pd.DataFrame({'from': From,
                            'to': To})
