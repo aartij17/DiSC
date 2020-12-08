@@ -34,7 +34,7 @@ class NetworkUI:
             NodeColors[recv_node_name] = [1, .5, 1]
             for j in range(len(self.data[i])):
                 message = self.data[i][j]
-                if len(message) > 0:
+                if message is not None:
                     sender_node_name = "Sender: Node " + str(j)
                     if sender_node_name not in pos:
                         pos[sender_node_name] = (j, 3)

@@ -31,22 +31,25 @@ class StreamletBlockchain:
 
 
     def finalize (self):
-        found_three_in_a_row = NULL #middle block in three in a row
+        found_three_in_a_row = None #middle block in three in a row
         for blocks in self.blockchain_top:
             curr_block = blocks
             consecutive = False
-            while not curr_block.is_initial() and not curr_block in self.finalized:
+            print ("CURR_BLOCK")
+            print (curr_block)
+            while curr_block is not None and not curr_block.is_initial() and not curr_block in self.finalized:
                 # If the previous block was consecutive and this is consecutive,
                 # Then it must be three in a row and therefore finalized
                 if (consecutive and curr_block.consecutive_epochs()):
                     found_three_in_a_row = curr_block
+                    print ("Found Three is a row!!!! +_+_+_+_+_+_+_+_+_+_+_+_+_+_+")
                     break
 
                 consecutive = curr_block.consecutive_epochs()
 
                 curr_block = curr_block.get_prev_block()
 
-            if (found_three_in_a_row != NULL):
+            if (found_three_in_a_row != None):
                 break
 
         if (found_three_in_a_row):
@@ -106,7 +109,7 @@ class StreamletBlock:
         self.transactions = transactions
 
     def consecutive_epochs (self):
-        return (prev_block != NULL) and (self.epoch_num - 1 == prev_block.get_epoch_num())
+        return (self.prev_block != None) and (self.epoch_num - 1 == self.prev_block.get_epoch_num())
 
     def get_prev_block (self):
         return self.prev_block

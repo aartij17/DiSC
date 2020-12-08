@@ -50,21 +50,25 @@ class Streamlet (ProtocolBase):
         vote_messages = []
         echo_messages = []
         
-        for i in range (len(received_messages)):
-            print (received_messages[i])
-            m = Message.get_message_object (received_messages[i])
-            message = m
+        #for i in range (len(received_messages)):
+        for m in received_messages:
+            print (m)
+            #m = Message.get_message_object (received_messages[i])
+            #message = m
             #print ("MESSAGE GET CONTENT")
             #print (Message.get_message_content(m))
-            contents = Message.get_message_content(m).split("`")
+
+            # AARTI CHANGE
+            contents = m.content.split("`")
+            #contents = Message.get_message_content(m).split("`")
             
             #print ("CONTENTS")
             #print (contents)
             #contents = message.split(";")
             if contents[0] == "proposal":
-                proposal_messages.append (message)
+                proposal_messages.append (m)
             elif contents[0] == "vote":
-                vote_messages.append (message)
+                vote_messages.append (m)
             #elif contents[0] == "echo":
             #    for echo
             #    echo_messages[i].append (message)
@@ -106,7 +110,9 @@ class Streamlet (ProtocolBase):
                 signature = create_signature ("key_" + str(state["node_id"]), proposal)
                 m = Message ("proposal`" + proposal, state["node_id"], self.round, [signature])
                 #send_message = "proposal;" + state["node_id"] + ";" + proposal + ";" + signature
-                np.send_messages ([m.create_message_string()] * self.num_nodes, False) # supposed to be a broadcast
+                # AARTI CHANGE
+                np.send_messages([m] * self.num_nodes, False)
+                #np.send_messages ([m.create_message_string()] * self.num_nodes, False) # supposed to be a broadcast
                 # send
                 
                 state["proposals"][proposal] = False
@@ -125,7 +131,7 @@ class Streamlet (ProtocolBase):
         # on receipt of 2/3 majority of votes, then notarize (should listen here for votes)
         elif state["phase"] == 2: # receiving votes and notarizing on the blockchain
             self.handle_votes (vote_mess, state)
-         
+
         # echo proposals
         # cut corners
         # echo votes
@@ -153,14 +159,17 @@ class Streamlet (ProtocolBase):
         
         signature = create_signature ("key_" + str(state["node_id"]), prop_str)
         
-        m = Message ("vote`" + proposal, state["node_id"], self.round, [signature])
+        m = Message("vote`" + proposal, state["node_id"], self.round, [signature])
         
         # broadcast message
-        np.send_messages ([m.create_message_string()] * self.num_nodes, False)
+        np.send_messages ([m] * self.num_nodes, False)
         
                 
         state["proposals"][proposal] = False
         state["vote"][proposal] = 2
+        
+        # AARTI CHANGE
+        np.send_messages([m] * self.num_nodes, False)
      
 
     def handle_votes (self, vote_mess, state):
@@ -197,8 +206,10 @@ class Streamlet (ProtocolBase):
         
             #contents = Message.get_message_content(prop).split(",")
             prop_id = prop.get_sender()
-            proposal = Message.get_message_content(prop).split("`")[1]
-            signature = Message.get_message_signatures(prop)[0]
+            # AARTI CHANGE
+            #proposal = Message.get_message_content(prop).split("`")[1]
+            proposal = prop.content.split("`")[1]
+            signature = prop.get_message_signatures()[0]
             
             state["proposals"][proposal] = False
             

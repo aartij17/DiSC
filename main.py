@@ -88,8 +88,8 @@ class Main:
             next_ui.replace_data(self.np.next_messages_passed, len(self.np.next_messages_passed))
             next_ui.update()
 
-            f_np.write(str(counter) + "|PrevMessages|" + json.dumps(self.np.prev_messages_passed) + "\n")
-            f_np.write(str(counter) + "|NextMessages|" + json.dumps(self.np.next_messages_passed) + "\n")
+            # f_np.write(str(counter) + "|PrevMessages|" + json.dumps(self.np.prev_messages_passed) + "\n")
+            # f_np.write(str(counter) + "|NextMessages|" + json.dumps(self.np.next_messages_passed) + "\n")
 
             self.np.empty_messages()
             counter += 1
