@@ -39,6 +39,7 @@ class Node:
         print("Node state before protocol run: {}".format(self.state))
         self.protocol.run_protocol_one_round(self.state, self.np, self.log)
         print("Node state after protocol run: {}".format(self.state))
+        print("=======================================================================================")
 
 
     def get_committed_log(self):
