@@ -9,9 +9,7 @@ class Message:
         self.sender_id = sender_id
         self.round = r
         self.signatures = signatures if signatures else []
-
-    # def get_new_signature(self, r, node_id, message_content):
-    #     return create_signature("{}-{}".format(r, node_id), message_content)
+        self.sender_id = sender_id
 
     def get_sender (self):
         return self.sender_id
@@ -35,13 +33,15 @@ class Message:
             sender_id,
             INTRA_MESSAGE_DELIM,
             content,
-            INTRA_MESSAGE_DELIM,
-            json.dumps(signatures)
-        )
+            INTRA_MESSAGE_DELIM
+        ) + json.dumps(signatures)
 
     def create_add_signature(self, key, content):
         signature = create_signature(key, content)
         self.signatures.append(signature)
+
+    def get_sender(self):
+        return self.sender_id
 
     @classmethod
     def get_message_elements(cls, msg):
@@ -57,7 +57,6 @@ class Message:
 
     @classmethod
     def get_message_content(cls, msg):
-        # print("############", msg.content)
         return msg.content
 
     @classmethod
@@ -66,6 +65,7 @@ class Message:
 
     @classmethod
     def get_message_object(cls, msg):
+        print(msg)
         message_elements = msg.split(INTRA_MESSAGE_DELIM)
         signatures = json.loads(message_elements[3])
         new_msg_obj = Message(

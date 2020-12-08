@@ -18,8 +18,7 @@ class NetworkProcess:
             self.send_message(i, messages[i], multi_message)
 
     def send_message(self, receive_node_id, message, multi_message=False):
-
-        message_elements = Message.get_message_elements(message)
+        message_elements = Message.get_message_elements(message) ## smaller messages
         messages_to_be_sent = []
         if multi_message:
             messages_for_one_node = message_elements[2].split(MESSAGES_PER_NODE_DELIM)
@@ -31,7 +30,7 @@ class NetworkProcess:
                                                               m,  # content
                                                               message_elements[3]))  # signatures
 
-        print("messages sent out by network process: {}", format(messages_to_be_sent))
+        print("messages sent out by network process: {}".format(messages_to_be_sent))
         for m in messages_to_be_sent:
             if len(self.next_messages_passed[receive_node_id]) == 0:
                 self.next_messages_passed[receive_node_id] = [m]

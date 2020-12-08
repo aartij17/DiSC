@@ -5,7 +5,7 @@ class SetEncoder(json.JSONEncoder):
        if isinstance(obj, set):
           return list(obj)
        return json.JSONEncoder.default(self, obj)
-       
+
 def is_jsonable(x):
     try:
         json.dumps(x)
@@ -64,7 +64,7 @@ class Node:
         # stub
         pass
 
-    
+
     def dump_state(self):
         tmp_state = {}
         for key in self.state: # Fix

@@ -1,3 +1,4 @@
+
 from common.log import *
 from common.utils import *
 from network_process import NetworkProcess
@@ -38,7 +39,8 @@ class Main:
 
         # initialize adversary nodes
         for i in range(self.num_a_nodes):
-            a_node = Node(i + self.num_h_nodes, self.protocol, self.np, self.log, adversary=True)
+            adversary_protocol = get_protocol(config_blob["adversary_nodes"][i], self.num_a_nodes, self.num_h_nodes)
+            a_node = Node(i + self.num_h_nodes, adversary_protocol, self.np, self.log, adversary=True)
             self.a_nodes_arr.append(a_node)
 
     def start_loop(self):
@@ -78,9 +80,7 @@ class Main:
 
             # self.protocol.round += 1
 
-            # TODO: uncomment when we have UI component
-            # self.ui.update() # Might need to take in nodes, messages
-            # input()
+
             prev_ui.replace_data(self.np.prev_messages_passed, len(self.np.prev_messages_passed))
             prev_ui.update()
             next_ui.replace_data(self.np.next_messages_passed, len(self.np.next_messages_passed))
@@ -108,7 +108,7 @@ class Main:
             adversary_nodes = int(adversary_nodes)
         else:
             honest_nodes = int(config_blob["honest_nodes"])
-            adversary_nodes = int(config_blob["adversary_nodes"])
+            adversary_nodes = len(config_blob["adversary_nodes"])
 
         if adversary_nodes > honest_nodes:
             print("Adversary nodes cannot be more than honest nodes to achieve consensus, exiting now")
@@ -120,11 +120,11 @@ interactive_input = False
 config_blob = {}
 
 if __name__ == '__main__':
+    f = open("config.json")
+    lines = f.read()
+    config_blob = json.loads(lines)
     user_interact = input("How would you like to input?\n1. File(config.json)\n2. Interactive input\n")
     if user_interact == "1":
-        f = open("config.json")
-        lines = f.read()
-        config_blob = json.loads(lines)
         protocol_chosen = config_blob["protocol"]
     else:
         interactive_input = True
