@@ -28,17 +28,17 @@ class NetworkUI:
         NodeColors = {}
 
         for i in range(self.num_nodes):
-            sender_node_name = "Sender: Node " + str(i)
-            pos[sender_node_name] = (i, 1)
+            recv_node_name = "Receiver: Node " + str(i)
+            pos[recv_node_name] = (i, 1)
             message_idx = 0
-            NodeColors[sender_node_name] = [1, .5, 1]
+            NodeColors[recv_node_name] = [1, .5, 1]
             for j in range(len(self.data[i])):
                 message = self.data[i][j]
                 if len(message) > 0:
-                    receiver_node_name = "Receiver: Node " + str(j)
-                    if receiver_node_name not in pos:
-                        pos[receiver_node_name] = (j, 3)
-                        NodeColors[receiver_node_name] = [1, .5, 1]
+                    sender_node_name = "Sender: Node " + str(j)
+                    if sender_node_name not in pos:
+                        pos[sender_node_name] = (j, 3)
+                        NodeColors[sender_node_name] = [1, .5, 1]
                         
                     message_idx += 1
                     NodeColors[message] = [1, 1, 0]
@@ -47,7 +47,7 @@ class NetworkUI:
                     From.append(sender_node_name)
                     To.append(message)
                     From.append(message)
-                    To.append(receiver_node_name)
+                    To.append(recv_node_name)
 
         df = pd.DataFrame({'from': From,
                            'to': To})
