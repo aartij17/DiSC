@@ -26,22 +26,28 @@ class NetworkUI:
         To = []
         pos = {}  # Node positionss
         NodeColors = {}
+
         for i in range(self.num_nodes):
-            node_name = "Node " + str(i) + " Inbox"
-            pos[node_name] = (i, 1)
+            sender_node_name = "Sender: Node " + str(i)
+            pos[sender_node_name] = (i, 1)
             message_idx = 0
-            NodeColors[node_name] = [1, .5, 1]
-            from_node = node_name
+            NodeColors[sender_node_name] = [1, .5, 1]
             for j in range(len(self.data[i])):
                 message = self.data[i][j]
                 if len(message) > 0:
+                    receiver_node_name = "Receiver: Node " + str(j)
+                    if receiver_node_name not in pos:
+                        pos[receiver_node_name] = (j, 3)
+                        NodeColors[receiver_node_name] = [1, .5, 1]
+                        
                     message_idx += 1
-                    node_message = "To:" + str(i) + ", From:" + str(j) + "\nContent:" + message
-                    NodeColors[node_message] = [1, 1, 0]
-                    pos[node_message] = (i, message_idx + 1)
-                    From.append(from_node)
-                    To.append(node_message)
-                    from_node = node_message
+                    NodeColors[message] = [1, 1, 0]
+                    if message not in pos:
+                        pos[message] = (message_idx, 2)
+                    From.append(sender_node_name)
+                    To.append(message)
+                    From.append(message)
+                    To.append(receiver_node_name)
 
         df = pd.DataFrame({'from': From,
                            'to': To})
@@ -62,14 +68,14 @@ class NetworkUI:
 
         nodes = nx.draw_networkx_nodes(G, pos,
                                        nodelist=Circles,
-                                       node_size=1.25e3,
+                                       node_size=2e3,
                                        node_shape='o',
                                        node_color='white',
                                        alpha=0)
 
         nodes = nx.draw_networkx_nodes(G, pos,
                                        nodelist=Circles,
-                                       node_size=1e3,
+                                       node_size=2e3,
                                        node_shape='o',
                                        node_color=Colors,
                                        edgecolors='black',

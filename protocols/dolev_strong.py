@@ -92,6 +92,7 @@ class DolevStrong(ProtocolBase):
 
             for msg_obj in send_messages:
                 prepared_send_messages.append(msg_obj.create_message(msg_obj.round,
+                                                                     state["node_id"],
                                                                      msg_obj.content,
                                                                      msg_obj.signatures))
 
