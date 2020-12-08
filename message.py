@@ -27,7 +27,7 @@ class Message:
 
     @classmethod
     def create_message(cls, round, sender_id, content, signatures):
-        return "{}{}{}{}{}{}{}".format(
+        return "{}{}{}{}{}{}".format(
             round,
             INTRA_MESSAGE_DELIM,
             sender_id,
@@ -72,7 +72,7 @@ class Message:
             message_elements[2],
             message_elements[1],
             r=message_elements[0],
-            signatures=signatures
+            signatures=json.loads(signatures)
         )
         return new_msg_obj
 
