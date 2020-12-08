@@ -59,9 +59,9 @@ class Message:
     def get_message_content(cls, msg):
         return msg.content
 
-    @classmethod
-    def get_message_signatures(cls, msg):
-        return json.loads(msg.signatures)
+
+    def get_message_signatures(self):
+        return self.signatures
 
     @classmethod
     def get_message_object(cls, msg):

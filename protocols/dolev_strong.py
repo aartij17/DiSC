@@ -58,43 +58,39 @@ class DolevStrong(ProtocolBase):
 
             print("returning, since round=0", [FIRST_DOLEV_STRONG_MESSAGE] * (self.num_faulty_nodes
                                                                               + self.num_honest_nodes))
-            send_messages = [Message.create_message(new_message.round, state["node_id"], new_message.content, new_message.signatures)] * \
-                            (self.num_faulty_nodes + self.num_honest_nodes)
-            np.send_messages(send_messages, False) ## list of strings
+
+            new_message.sender_id = state["node_id"]
+            send_messages = [new_message] * (self.num_nodes)
+            np.send_messages(send_messages, False)
 
         elif 1 <= state["round"] < (self.num_faulty_nodes + 1):
             send_messages = []
             valid_rcvd_msg_content = []
             prepared_send_messages = []
-            rcvd_message_objects = create_message_objects(state["received_messages"])
-            print("***** rcvd_message_objects: {}".format(rcvd_message_objects))
+            print("***** rcvd_message_objects: {}".format(state["received_messages"]))
 
-            for i, rcvd_msg_obj in enumerate(rcvd_message_objects):
-                print("index {} of rcvd_message_objects".format(i))
-                rcvd_msg_content = Message.get_message_content(rcvd_msg_obj)
-                print("rcvd_msg_obj:: {}::{}".format(rcvd_msg_obj.signatures, type(rcvd_msg_obj.signatures)))
-                verified = verify_message_signatures(state["round"], state["node_id"], rcvd_msg_obj)
+            for i, r_msg in enumerate(state["received_messages"]):
+                verified = verify_message_signatures(state["round"], state["node_id"], r_msg)
                 if not verified:
                     print("Invalid signature found, terminating the protocol run")
                     sys.exit(1)
 
-                if rcvd_msg_content in state["extracted_set"]:
+                if r_msg.content in state["extracted_set"]:
                     continue
-                valid_rcvd_msg_content.append(rcvd_msg_content)
-                state["extracted_set"].add(rcvd_msg_content)
-                new_message = Message("", state["round"])
+                valid_rcvd_msg_content.append("{}".format(r_msg.content))
+                state["extracted_set"].add(r_msg.content)
+
+                new_message = Message("", state["node_id"], state["round"])
                 send_messages.append(new_message)
-            print(valid_rcvd_msg_content)
+
             join_broadcast_message = MESSAGES_PER_NODE_DELIM.join(valid_rcvd_msg_content)
             for msg_obj in send_messages:
                 msg_obj.content = join_broadcast_message
                 msg_obj.create_add_signature(SIG_KEY_FORMAT.format(state["node_id"]), msg_obj.content)
 
             for msg_obj in send_messages:
-                prepared_send_messages.append(msg_obj.create_message(msg_obj.round,
-                                                                     state["node_id"],
-                                                                     msg_obj.content,
-                                                                     msg_obj.signatures))
+                msg_obj.sender_id = state["node_id"]
+                prepared_send_messages.append(msg_obj)
 
             np.send_messages(prepared_send_messages, True)
 
