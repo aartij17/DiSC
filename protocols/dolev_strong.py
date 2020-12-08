@@ -16,20 +16,6 @@ def create_message_objects(messages):
     return message_obj_list
 
 
-def verify_message_signatures(round, node_id, msg_obj):
-    if len(msg_obj.signatures) != round:
-        print(msg_obj.signatures)
-        print("VERIFY_MESSAGE_SIG:, num_sig{} != round{}".format(len(msg_obj.signatures), round))
-        return False
-    print("SIGNATURES: {}".format(type(msg_obj.signatures)))
-    for s in msg_obj.signatures:
-        print("S::: {}".format(s))
-        key = SIG_KEY_FORMAT.format(node_id)
-        if not verify_signature(key, msg_obj.content, s):
-            return False
-    return True
-
-
 class DolevStrong(ProtocolBase):
     def __init__(self, num_faulty_nodes, num_honest_nodes):
         super().__init__(num_faulty_nodes, num_honest_nodes)
@@ -70,7 +56,9 @@ class DolevStrong(ProtocolBase):
             print("***** rcvd_message_objects: {}".format(state["received_messages"]))
 
             for i, r_msg in enumerate(state["received_messages"]):
-                verified = verify_message_signatures(state["round"], state["node_id"], r_msg)
+                if r_msg.content in state["extracted_set"]:
+                    continue
+                verified = self.verify_message_signatures(r_msg, state)
                 if not verified:
                     print("Invalid signature found, terminating the protocol run")
                     sys.exit(1)
@@ -114,3 +102,23 @@ class DolevStrong(ProtocolBase):
 
     def get_protocol_name(self) -> str:
         return DOLEV_STRONG_PROTOCOL
+
+    def verify_message_signatures(self, msg_obj, state):
+        if len(msg_obj.signatures) != state["round"]:
+            print(msg_obj.signatures)
+            print("VERIFY_MESSAGE_SIG:, num_sig{} != round{}".format(len(msg_obj.signatures), state["round"]))
+            return False
+        print("SIGNATURES: {}".format(type(msg_obj.signatures)))
+        if msg_obj.sender_id > self.num_nodes:
+            return False
+        for s in msg_obj.signatures:
+            node_sig_verified = False
+            for i in range(self.num_nodes):
+                # if i == state["node_id"]:
+                #     continue
+                node_sig_verified = verify_signature(SIG_KEY_FORMAT.format(i), msg_obj.content, s)
+                if node_sig_verified:
+                    break
+            if not node_sig_verified:
+                return False
+        return True

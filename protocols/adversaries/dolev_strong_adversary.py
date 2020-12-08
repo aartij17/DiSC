@@ -17,12 +17,6 @@ class DolevStrongAdversary(ProtocolBase):
     
 
     def run_protocol_one_round(self, state, np, log):
-
-        def create_message_objects(messages):
-            message_obj_list = []
-            for msg in messages:
-                message_obj_list.append(Message.get_message_object(msg))
-            return message_obj_list
         # Forward every message it ever received, even if not valid, to every other node
         self.all_messages.extend(np.receive_messages(state["node_id"]))
         print("----------------------- round: {}, adversary node_id: {} -----------------------".format(state["round"],
@@ -31,15 +25,12 @@ class DolevStrongAdversary(ProtocolBase):
         send_messages = []
         valid_rcvd_msg_content = []
         prepared_send_messages = []
-        rcvd_message_objects = create_message_objects(
-            self.all_messages)
+        rcvd_message_objects = self.all_messages
         print("***** rcvd_message_objects: {}".format(rcvd_message_objects))
 
         for i, rcvd_msg_obj in enumerate(rcvd_message_objects):
             print("index {} of rcvd_message_objects".format(i))
-            rcvd_msg_content = Message.get_message_content(rcvd_msg_obj)
-
-            valid_rcvd_msg_content.append(rcvd_msg_content)
+            valid_rcvd_msg_content.append("{}".format(rcvd_msg_obj.content))
             new_message = Message("", state["round"])
             send_messages.append(new_message)
         print(valid_rcvd_msg_content)
@@ -51,9 +42,11 @@ class DolevStrongAdversary(ProtocolBase):
                 SIG_KEY_FORMAT.format(state["node_id"]), msg_obj.content)
 
         for msg_obj in send_messages:
-            prepared_send_messages.append(msg_obj.create_message(msg_obj.round,
-                                                                    msg_obj.content,
-                                                                    msg_obj.signatures))
+            msg_obj.sender_id = state["node_id"]
+            prepared_send_messages.append(msg_obj)
+            # prepared_send_messages.append(msg_obj.create_message(msg_obj.round,
+            #                                                         msg_obj.content,
+            #                                                         msg_obj.signatures))
 
         np.send_messages(prepared_send_messages, True)
     # else:

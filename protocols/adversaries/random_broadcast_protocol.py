@@ -13,8 +13,8 @@ class RandomBroadcastAdversary(ProtocolBase):
         for i in range(np.num_nodes()):
             
             random_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
-            message = Message.create_message(state["round"], state["node_id"], random_string, [])
-            np.send_message(i, random_string)
+            message = Message(random_string, state["node_id"], state["round"], [])
+            np.send_message(i, message)
         return
 
     def init_state(self, state):
