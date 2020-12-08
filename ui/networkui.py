@@ -35,7 +35,7 @@ class NetworkUI:
             for j in range(len(self.data[i])):
                 message = self.data[i][j]
                 if message is not None:
-                    sender_node_name = "Sender: Node " + str(j)
+                    sender_node_name = "Sender: Node " + str(message.get_sender())
                     if sender_node_name not in pos:
                         pos[sender_node_name] = (j, 3)
                         NodeColors[sender_node_name] = [1, .5, 1]
