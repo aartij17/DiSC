@@ -80,3 +80,5 @@ class Message:
     def copy_message(cls, msg):
         cpy_msg = Message(msg.content, msg.get_sender(), msg.round, msg.signatures.copy())
         return cpy_msg
+
+
