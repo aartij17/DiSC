@@ -76,7 +76,7 @@ class StreamletBlockchain:
         """
         longest = self.most_depth_blocks()
         for block in longest:
-            if (prev_hash == StreamletBlock.block_hash(block)):
+            if (int(prev_hash) == StreamletBlock.block_hash(block)):
                 return True
         return False
         

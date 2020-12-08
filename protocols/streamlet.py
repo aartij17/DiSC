@@ -108,6 +108,9 @@ class Streamlet (ProtocolBase):
                 #send_message = "proposal;" + state["node_id"] + ";" + proposal + ";" + signature
                 np.send_messages ([m.create_message_string()] * self.num_nodes, False) # supposed to be a broadcast
                 # send
+                
+                state["proposals"][proposal] = False
+                state["vote"][proposal] = 1
                     
             #state["phase"] = 1
             
@@ -121,7 +124,7 @@ class Streamlet (ProtocolBase):
          
         # on receipt of 2/3 majority of votes, then notarize (should listen here for votes)
         elif state["phase"] == 2: # receiving votes and notarizing on the blockchain
-            self.handle_votes (vote_mess)
+            self.handle_votes (vote_mess, state)
          
         # echo proposals
         # cut corners
@@ -154,9 +157,13 @@ class Streamlet (ProtocolBase):
         
         # broadcast message
         np.send_messages ([m.create_message_string()] * self.num_nodes, False)
+        
+                
+        state["proposals"][proposal] = False
+        state["vote"][proposal] = 2
      
 
-    def handle_votes (self, vote_mess):
+    def handle_votes (self, vote_mess, state):
 
         for vot in vote_mess:
             messages = Message.get_message_content(vot).split("`")
@@ -171,12 +178,12 @@ class Streamlet (ProtocolBase):
             if (verify_signature("key_" + str(state["node_id"]), proposal, Message.get_message_signatures(vot)[0])):
                 if not proposal in state["proposals"]:
                     state["proposals"][proposal] = False
-                if not proposal in state["votes"]:
-                    state["votes"][proposal] = 1
+                if not proposal in state["vote"]:
+                    state["vote"][proposal] = 1
                 else:
-                    state["votes"][proposal] += 1
+                    state["vote"][proposal] += 1
                     
-                if (state["votes"][proposal] > 2 * (self.num_faulty_nodes + self.num_honest_nodes) / 3 + 1 and not state["proposals"][proposal]):
+                if (state["vote"][proposal] > 2 * (self.num_faulty_nodes + self.num_honest_nodes) / 3 + 1 and not state["proposals"][proposal]):
                     state["proposals"][proposal]  = True
                     state["blockchain"].append_to_blockchain (prev_hash, epoch, trans)
                     
@@ -184,13 +191,8 @@ class Streamlet (ProtocolBase):
             
 
     def handle_proposals (self, prop_mess, state, np):
-        print ("PROP MESS LEN")
-        print (len (prop_mess))
         for prop in prop_mess:
             # add to proposal state
-            print ("PROP ^^^^^^^")
-            print (prop)
-            
             accept_prop = True
         
             #contents = Message.get_message_content(prop).split(",")
@@ -200,27 +202,30 @@ class Streamlet (ProtocolBase):
             
             state["proposals"][proposal] = False
             
-            print ("Accept proposal 1 " + str (accept_prop))
+            #print ("Accept proposal 1 " + str (accept_prop))
             
             #print (proposal)
             #print (signature)
-            if (not verify_signature ("key_" + prop_id, proposal, signature)):
+            if (not verify_signature ("key_" + str(prop_id), proposal, signature)):
                 accept_prop = False
             
             prop_contents = proposal.split(",")
-            prev_hash = prop_contents[0]
-            epoch = prop_contents[1]
+            prev_hash = int(prop_contents[0])
+            epoch = int(prop_contents[1])
             trans = prop_contents[2]
             
-            print ("Accept proposal 2 " + str (accept_prop))
+            #print ("Accept proposal 2 " + str (accept_prop))
             
             if (not state["blockchain"].vote_for (prev_hash)):
                 accept_prop = False
             
-            print ("Accept proposal 3 " + str (accept_prop))
+            #print ("Accept proposal 3 " + str (accept_prop))
+            
+            
             
             curr_leader = hash_function("epoch_" + str(epoch)) % self.num_nodes
-            if (curr_leader != prop_id):
+            
+            if (curr_leader != int(prop_id)):
                 accept_prop = False
                 
             print ("Accept proposal 4 " + str (accept_prop))
