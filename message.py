@@ -33,8 +33,8 @@ class Message:
             sender_id,
             INTRA_MESSAGE_DELIM,
             content,
-            INTRA_MESSAGE_DELIM
-        ) + json.dumps(signatures)
+            INTRA_MESSAGE_DELIM,
+            json.dumps(signatures))
 
     def create_add_signature(self, key, content):
         signature = create_signature(key, content)
@@ -80,5 +80,3 @@ class Message:
     def copy_message(cls, msg):
         cpy_msg = Message(msg.content, msg.get_sender(), msg.round, msg.signatures.copy())
         return cpy_msg
-
-
