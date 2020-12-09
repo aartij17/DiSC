@@ -1,4 +1,3 @@
-
 from common.log import *
 from common.utils import *
 from network_process import NetworkProcess
@@ -8,10 +7,43 @@ import os
 import datetime
 import json
 import sys
+import logging
+
+
+log = logging.getLogger('pythonConfig')
+
+def init_logger():
+    global log
+    LOG_LEVEL = logging.DEBUG
+    #LOGFORMAT = "  %(log_color)s%(reset)s %(log_color)s%(message)s%(reset)s"
+    from colorlog import ColoredFormatter
+    logging.root.setLevel(LOG_LEVEL)
+    formatter = ColoredFormatter(
+    "%(log_color)s%(reset)s %(log_color)s%(message)s",
+    datefmt=None,
+    reset=True,
+    log_colors={
+        'DEBUG':    'cyan',
+        'INFO':     'green',
+        'WARNING':  'yellow',
+        'ERROR':    'red',
+        'CRITICAL': 'red,bg_white',
+    },
+    secondary_log_colors={},
+    style='%'
+    )
+    #formatter = ColoredFormatter(LOGFORMAT)
+    stream = logging.StreamHandler()
+    stream.setLevel(LOG_LEVEL)
+    stream.setFormatter(formatter)
+    log = logging.getLogger('pythonConfig')
+    log.setLevel(LOG_LEVEL)
+    log.addHandler(stream)
 
 
 class Main:
     def __init__(self, protocol):
+
         (self.num_h_nodes, self.num_a_nodes) = self.initialize_number_of_nodes()
         self.num_nodes = self.num_a_nodes + self.num_h_nodes
         self.np = NetworkProcess(self.num_nodes)
@@ -23,9 +55,9 @@ class Main:
         self.h_nodes_arr = []
         self.a_nodes_arr = []
 
-        print("---------------------storage initialized:---------------------")
-        print("pre_message_passed: {}".format(self.np.prev_messages_passed))
-        print("next_message_passed: {}".format(self.np.next_messages_passed))
+        log.info("---------------------storage initialized:---------------------")
+        log.info("pre_message_passed: {}".format(self.np.prev_messages_passed))
+        log.info("next_message_passed: {}".format(self.np.next_messages_passed))
 
         # initialize main with the protocol object
         self.protocol = get_protocol(protocol, self.num_a_nodes, self.num_h_nodes)
@@ -45,8 +77,8 @@ class Main:
 
     def start_loop(self):
         counter = 0
-        prev_ui = NetworkUI(self.np.prev_messages_passed, len(self.np.prev_messages_passed))
-        next_ui = NetworkUI(self.np.next_messages_passed, len(self.np.next_messages_passed))
+        prev_ui = NetworkUI(self.np.prev_messages_passed, len(self.np.prev_messages_passed), self.num_h_nodes, self.num_a_nodes)
+        next_ui = NetworkUI(self.np.next_messages_passed, len(self.np.next_messages_passed), self.num_h_nodes, self.num_a_nodes)
         prev_ui.start()
         next_ui.start()
 
@@ -76,20 +108,18 @@ class Main:
             for i in range(self.num_a_nodes):
                 self.a_nodes_arr[i].run_protocol_one_round()
 
-            # # call adversary actions
-            # for i in range(self.num_a_nodes):
-            #     self.a_nodes_arr[i].adversary_actions()
-
-            # self.protocol.round += 1
-
 
             prev_ui.replace_data(self.np.prev_messages_passed, len(self.np.prev_messages_passed))
             prev_ui.update()
             next_ui.replace_data(self.np.next_messages_passed, len(self.np.next_messages_passed))
             next_ui.update()
 
-            # f_np.write(str(counter) + "|PrevMessages|" + json.dumps(self.np.prev_messages_passed) + "\n")
-            # f_np.write(str(counter) + "|NextMessages|" + json.dumps(self.np.next_messages_passed) + "\n")
+            str_prev_msgs = [str(m) for m in self.np.prev_messages_passed]
+            str_next_msgs = [str(m) for m in self.np.next_messages_passed]
+
+            ## ASK DANNY ABOUT UI
+            f_np.write(str(counter) + "|PrevMessages|" + json.dumps(str_prev_msgs) + "\n")
+            f_np.write(str(counter) + "|NextMessages|" + json.dumps(str_next_msgs) + "\n")
 
             self.np.empty_messages()
             counter += 1
@@ -141,5 +171,6 @@ if __name__ == '__main__':
             else:
                 print("Please enter the correct protocol choice as numbers")
                 continue
+    init_logger()
     m = Main(protocol_chosen)
     m.start_loop()

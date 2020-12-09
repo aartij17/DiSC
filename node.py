@@ -1,5 +1,6 @@
 import json
 
+
 class SetEncoder(json.JSONEncoder):
     def default(self, obj):
        if isinstance(obj, set):
@@ -36,10 +37,11 @@ class Node:
         return self.id
 
     def run_protocol_one_round(self):
-        print("Node state before protocol run: {}".format(self.state))
+        from main import log
+        #print("Node state before protocol run: {}".format(self.state))
         self.protocol.run_protocol_one_round(self.state, self.np, self.log)
-        print("Node state after protocol run: {}".format(self.state))
-        print("=======================================================================================")
+        #print("Node state after protocol run: {}".format(self.state))
+        log.info("=======================================================================================")
 
 
     def get_committed_log(self):

@@ -1,11 +1,11 @@
+from main import log
 from common.constants import *
 from common.signatures import *
-
 from message import Message
 from protocols.protocol import ProtocolBase
-
 FIRST_DOLEV_STRONG_MESSAGE = 1
 SIG_KEY_FORMAT = "Key:{}"
+
 
 
 def create_message_objects(messages):
@@ -18,6 +18,7 @@ def create_message_objects(messages):
 class DolevStrong(ProtocolBase):
     def __init__(self, num_faulty_nodes, num_honest_nodes):
         super().__init__(num_faulty_nodes, num_honest_nodes)
+
 
     '''
         Run receives all the messages which this node has received in the previous round
@@ -32,17 +33,18 @@ class DolevStrong(ProtocolBase):
         send_messages = ["b1||b2||b3", "b1||b2||b3"]
     '''
 
-    def run_protocol_one_round(self, state, np, log):
+    def run_protocol_one_round(self, state, np, l=None):
         state["received_messages"] = np.receive_messages(state["node_id"])
-        print("################################### ROUND: {}, NODE_ID: {} ###################################".format(state["round"],
+
+        log.info("################################### ROUND: {}, NODE_ID: {} ###################################".format(state["round"],
                                                                                               state["node_id"]))
         if state["round"] == 0 and state["node_id"] == 0:
             new_message = Message(FIRST_DOLEV_STRONG_MESSAGE, state["round"])
             new_message.create_add_signature(SIG_KEY_FORMAT.format(state["node_id"]),
                                              FIRST_DOLEV_STRONG_MESSAGE)
 
-            print("returning, since round=0", [FIRST_DOLEV_STRONG_MESSAGE] * (self.num_faulty_nodes
-                                                                              + self.num_honest_nodes))
+            log.info("returning, since round=0: {}".format([FIRST_DOLEV_STRONG_MESSAGE] * (self.num_faulty_nodes
+                                                                              + self.num_honest_nodes)))
 
             new_message.sender_id = state["node_id"]
             send_messages = new_message
@@ -52,11 +54,11 @@ class DolevStrong(ProtocolBase):
         elif 1 <= state["round"] <= (self.num_faulty_nodes + 1):
             valid_rcvd_msg_content = []
             messages_to_be_sent = []
-            print("***** rcvd_message_objects: {}".format(state["received_messages"]))
+            #log.warning("***** rcvd_message_objects: {}".format(state["received_messages"]))
             for i, r_msg in enumerate(state["received_messages"]):
                 verified = self.verify_message_signatures(r_msg, state)
                 if not verified:
-                    print("Invalid signature found, ignoring the message: {}".format(r_msg))
+                    log.critical("Invalid signature found, ignoring the message: {}".format(r_msg))
                     continue
 
 
@@ -74,11 +76,11 @@ class DolevStrong(ProtocolBase):
         if state["round"] == self.num_faulty_nodes + 1:
             #print("current_round: {}, num_faulty_nodes: {}".format(state["round"], self.num_faulty_nodes))
             if len(state["extracted_set"]) == 1:
-                print("Consensus output: {}".format(
+                log.error("Consensus output: {}".format(
                     state["extracted_set"]))  # TODO: figure out what bit has to be returned
             else:
-                print("Failure to achieve Consensus output: {}".format(0))
-        print("state updated:: {}".format(state["round"]))
+                log.error("Failure to achieve Consensus output: {}".format(0))
+        #print("state updated:: {}".format(state["round"]))
         state["round"] = state["round"] + 1
 
     def init_state(self, state):
@@ -92,10 +94,9 @@ class DolevStrong(ProtocolBase):
     def verify_message_signatures(self, msg_obj, state):
         if not (len(set(msg_obj.signatures)) == len(msg_obj.signatures)
                 and len(msg_obj.signatures) == state["round"]):
-            print("len(set(msg_obj.signatures)) == len(msg_obj.signatures): {}".format(len(set(msg_obj.signatures)) == len(msg_obj.signatures)))
-            print("len(msg_obj.signatures) != state[round]: {}".format(len(msg_obj.signatures) != state["round"]))
+            #log.debug("len(set(msg_obj.signatures)) == len(msg_obj.signatures): {}".format(len(set(msg_obj.signatures)) == len(msg_obj.signatures)))
+            #log.debug("len(msg_obj.signatures) != state[round]: {}".format(len(msg_obj.signatures) != state["round"]))
             return False
-        # print("SIGNATURES: {}".format(type(msg_obj.signatures)))
         if msg_obj.sender_id > self.num_nodes:
             return False
         for s in msg_obj.signatures:

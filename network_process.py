@@ -13,7 +13,8 @@ class NetworkProcess:
             self.next_messages_passed.append([])
 
     def broadcast(self, message, multi_message):
-        print("******************** BROADCAST MESSAGES *************************")
+        from main import log
+        log.debug("******************** BROADCAST MESSAGES *************************")
         if multi_message:
             for msg in message:
                 for i in range(self.num_nodes):
@@ -24,11 +25,13 @@ class NetworkProcess:
 
 
     def send_messages(self, messages, multi_message):
-        print("******************** SEND MESSAGES *************************")
+        from main import log
+        log.debug("******************** SEND MESSAGES *************************")
         for i in range(len(messages)):
             self.send_message(i, messages[i], multi_message)
 
     def send_message(self, receive_node_id, message, multi_message=False):
+        from main import log
         #print("******************** SEND MESSAGE *************************")
         messages_to_be_sent = []
         if multi_message:
@@ -39,8 +42,8 @@ class NetworkProcess:
             messages_to_be_sent.append(Message(m, message.sender_id, message.round, message.signatures))
 
 
-        print("messages sent out by network process: {}".format(messages_to_be_sent))
-        print("receiver id: {}".format(receive_node_id))
+        log.debug("messages sent out by network process: {}".format(messages_to_be_sent))
+        log.debug("receiver id: {}".format(receive_node_id))
         for m in messages_to_be_sent:
             if len(self.next_messages_passed[receive_node_id]) == 0:
                 self.next_messages_passed[receive_node_id] = [m]
@@ -48,7 +51,8 @@ class NetworkProcess:
                 self.next_messages_passed[receive_node_id].append(m)
 
     def receive_messages(self, receive_node_id):
-        print("return from receive message:", self.prev_messages_passed[receive_node_id])
+        from main import log
+        log.debug("return from receive message: {}".format(self.prev_messages_passed[receive_node_id]))
         return self.prev_messages_passed[receive_node_id].copy()
 
     def drop_message(self, send_node_id, receive_node_id):

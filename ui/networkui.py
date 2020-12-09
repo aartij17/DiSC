@@ -12,11 +12,13 @@ ui_id = 1
 
 class NetworkUI:
 
-    def __init__(self, data, num_nodes):
+    def __init__(self, data, num_nodes, num_honest_nodes, num_adversary_nodes):
         # stub
         global ui_id
 
         self.num_nodes = num_nodes
+        self.num_honest_nodes = num_honest_nodes
+        self.num_adversary_nodes = num_adversary_nodes
         self.data = data
         self.id = ui_id
         ui_id += 1
@@ -34,7 +36,7 @@ class NetworkUI:
             NodeColors[recv_node_name] = [1, .5, 1]
             for j in range(len(self.data[i])):
                 message = self.data[i][j]
-                if message is not None:
+                if message is not None and type(message) != str:
                     sender_node_name = "Sender: Node " + str(message.get_sender())
                     if sender_node_name not in pos:
                         pos[sender_node_name] = (j, 3)
