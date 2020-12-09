@@ -5,7 +5,6 @@ import InputGroup from 'react-bootstrap/InputGroup'
 import FormControl from 'react-bootstrap/FormControl'; 
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import StateLogCard from './components/StateLogCard';
 import LogCard from './components/LogCard';
 import { useRef, useState } from 'react';
 import './App.css';
