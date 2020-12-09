@@ -26,7 +26,7 @@ class NetworkUI:
     def draw(self):
         From = []
         To = []
-        pos = {}  # Node positionss
+        pos = {}  # Node positions
         NodeColors = {}
 
         for i in range(self.num_nodes):
@@ -34,15 +34,22 @@ class NetworkUI:
             recv_node_name = str(i)
             pos[recv_node_name] = (i, 1)
             message_idx = 0
-            NodeColors[recv_node_name] = [1, .5, 1]
+            color_triple = [1, 0.5, 1]
+            if i >= self.num_honest_nodes:
+                color_triple = [1, 0, 0]
+            NodeColors[recv_node_name] = color_triple
             for j in range(len(self.data[i])):
                 message = self.data[i][j]
+                inner_color_triple = [1, 0.5, 1]
                 if message is not None and type(message) != str:
                     #sender_node_name = "Sender: Node " + str(message.get_sender())
                     sender_node_name = str(message.get_sender()) + " "
+                    if int(message.get_sender()) >= self.num_honest_nodes:
+                        inner_color_triple = [1, 0, 0]
+                    #sender_node_name = "Sender: Node " + str(message.get_sender())
                     if sender_node_name not in pos:
                         pos[sender_node_name] = (j, 3)
-                        NodeColors[sender_node_name] = [1, .5, 1]
+                        NodeColors[sender_node_name] = inner_color_triple
                         
                     message_idx += 1
                     NodeColors[message] = [1, 1, 0]
