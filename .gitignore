@@ -8,3 +8,4 @@ custom
 *.pyc
 .eslintcache
 .idea
+node_modules
