@@ -76,9 +76,9 @@ class Main:
             for i in range(self.num_a_nodes):
                 self.a_nodes_arr[i].run_protocol_one_round()
 
-            # call adversary actions
-            for i in range(self.num_a_nodes):
-                self.a_nodes_arr[i].adversary_actions()
+            # # call adversary actions
+            # for i in range(self.num_a_nodes):
+            #     self.a_nodes_arr[i].adversary_actions()
 
             # self.protocol.round += 1
 

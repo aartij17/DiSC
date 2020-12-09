@@ -12,13 +12,24 @@ class NetworkProcess:
             self.prev_messages_passed.append([])
             self.next_messages_passed.append([])
 
+    def broadcast(self, message, multi_message):
+        print("******************** BROADCAST MESSAGES *************************")
+        if multi_message:
+            for msg in message:
+                for i in range(self.num_nodes):
+                    self.send_message(i, msg, False)
+        else:
+            for i in range(self.num_nodes):
+                self.send_message(i, message, multi_message)
+
+
     def send_messages(self, messages, multi_message):
-        print("***** SEND MESSAGES **********")
+        print("******************** SEND MESSAGES *************************")
         for i in range(len(messages)):
             self.send_message(i, messages[i], multi_message)
 
     def send_message(self, receive_node_id, message, multi_message=False):
-        #message_elements = Message.get_message_elements(message) ## smaller messages
+        #print("******************** SEND MESSAGE *************************")
         messages_to_be_sent = []
         if multi_message:
             message_content_for_one_node = message.content.split(MESSAGES_PER_NODE_DELIM)
@@ -26,12 +37,10 @@ class NetworkProcess:
             message_content_for_one_node = [message.content]
         for m in message_content_for_one_node:
             messages_to_be_sent.append(Message(m, message.sender_id, message.round, message.signatures))
-            # messages_to_be_sent.append(Message.create_message(message.round,#message_elements[0],  # round
-            #                                                   message.sender_id, # sender_id
-            #                                                   m,  # content
-            #                                                   message.signatures))  # signatures
+
 
         print("messages sent out by network process: {}".format(messages_to_be_sent))
+        print("receiver id: {}".format(receive_node_id))
         for m in messages_to_be_sent:
             if len(self.next_messages_passed[receive_node_id]) == 0:
                 self.next_messages_passed[receive_node_id] = [m]

@@ -109,16 +109,11 @@ class NetworkUI:
 
 
 if __name__ == "__main__":
-    # logs = Log()
-    # for i in range(4):
-    #     logs.write(i, "Log_" + str(i))
     inboxes = [[], [], [], []]
 
     ui = NetworkUI(inboxes, len(inboxes))
     ui.start()
 
-    # logui = UI(logs, 4)
-    # logui.start()
 
     test_message_inbox = [
         ["message1", "message2", "message3", "message12"],

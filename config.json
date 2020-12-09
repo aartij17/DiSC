@@ -1,7 +1,7 @@
 {
-  "protocol": "DolevStrong",
+  "protocol": "DolevStrongWeak",
   "honest_nodes": 4,
   "adversary_nodes": [
-    "DoNothing", "DolevStrongAdversary"
+    "DolevStrongAdversary", "DolevStrongAdversary"
   ]
 }

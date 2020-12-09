@@ -7,5 +7,5 @@ def create_signature(key, message):
 
 
 def verify_signature(key, message, tag):
-    print("VERIFY SIG: KEY: {}, MESSAGE: {}, TAG: {}".format(key, message, tag))
+    #print("VERIFY SIG: KEY: {}, MESSAGE: {}, TAG: {}".format(key, message, tag))
     return SIG_FORMAT.format(key, message) == tag
