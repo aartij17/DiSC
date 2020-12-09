@@ -85,7 +85,7 @@ class Streamlet (ProtocolBase):
                 longest_blockchain_blocks = blockchain.most_depth_blocks()
                 prev_hash = StreamletBlock.block_hash(longest_blockchain_blocks[0])
                 # get transactions
-                transactions = "STUB" + str (self.round) #input()
+                transactions = "Trans_" + str (state["round"]) #input()
                 proposal = StreamletBlock.static_stringify(prev_hash, state["epoch"], transactions)
                 signature = create_signature ("key_" + str(state["node_id"]), proposal)
                 m = Message ("proposal`" + proposal, state["node_id"], self.round, [signature])

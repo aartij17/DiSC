@@ -30,14 +30,16 @@ class NetworkUI:
         NodeColors = {}
 
         for i in range(self.num_nodes):
-            recv_node_name = "Receiver: Node " + str(i)
+            #recv_node_name = "Receiver: Node " + str(i)
+            recv_node_name = str(i)
             pos[recv_node_name] = (i, 1)
             message_idx = 0
             NodeColors[recv_node_name] = [1, .5, 1]
             for j in range(len(self.data[i])):
                 message = self.data[i][j]
                 if message is not None and type(message) != str:
-                    sender_node_name = "Sender: Node " + str(message.get_sender())
+                    #sender_node_name = "Sender: Node " + str(message.get_sender())
+                    sender_node_name = str(message.get_sender()) + " "
                     if sender_node_name not in pos:
                         pos[sender_node_name] = (j, 3)
                         NodeColors[sender_node_name] = [1, .5, 1]
@@ -83,7 +85,7 @@ class NetworkUI:
                                        edgecolors='black',
                                        alpha=0.5)
 
-        nx.draw_networkx_labels(G, pos, Labels, font_size=4)
+        nx.draw_networkx_labels(G, pos, Labels, font_size=10)
 
         edges = nx.draw_networkx_edges(G, pos,
                                        node_size=1.8e3,
