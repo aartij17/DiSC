@@ -121,14 +121,17 @@ class Main:
             f_np.write(str(counter) + "|PrevMessages|" + json.dumps(str_prev_msgs) + "\n")
             f_np.write(str(counter) + "|NextMessages|" + json.dumps(str_next_msgs) + "\n")
 
-            self.np.empty_messages()
-            counter += 1
+
+
 
             for node in self.h_nodes_arr:
                 f_states.write(str(counter) + "|" + str(node.get_id()) + "|" + node.dump_state() + "\n")
 
             for node in self.a_nodes_arr:
                 f_states.write(str(counter) + "|" + str(node.get_id()) + "|" + node.dump_state() + "\n")
+
+            self.np.empty_messages()
+            counter += 1
 
         f_np.close()
 

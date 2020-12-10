@@ -53,9 +53,14 @@ class Node:
 
 
     def dump_state(self):
+        from main import log
         tmp_state = {}
         for key in self.state: # Fix
+            #log.error("state: {}".format(self.state))
             value = self.state[key]
+            #log.error("is_jsonable: {}, is_jsonable_STR: {}".format(is_jsonable(value), is_jsonable(str(value))))
             if is_jsonable(value):
                 tmp_state[key] = value
+            elif is_jsonable(str(value)):
+                tmp_state[key] = str(value)
         return json.dumps(tmp_state)
