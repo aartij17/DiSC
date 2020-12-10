@@ -77,9 +77,9 @@ class Main:
 
     def start_loop(self):
         counter = 0
-        prev_ui = NetworkUI(self.np.prev_messages_passed, len(self.np.prev_messages_passed), self.num_h_nodes, self.num_a_nodes)
+        #prev_ui = NetworkUI(self.np.prev_messages_passed, len(self.np.prev_messages_passed), self.num_h_nodes, self.num_a_nodes)
         next_ui = NetworkUI(self.np.next_messages_passed, len(self.np.next_messages_passed), self.num_h_nodes, self.num_a_nodes)
-        prev_ui.start()
+        #prev_ui.start()
         next_ui.start()
 
         current_path = os.getcwd()
@@ -109,8 +109,8 @@ class Main:
                 self.a_nodes_arr[i].run_protocol_one_round()
 
 
-            prev_ui.replace_data(self.np.prev_messages_passed, len(self.np.prev_messages_passed))
-            prev_ui.update()
+            #prev_ui.replace_data(self.np.prev_messages_passed, len(self.np.prev_messages_passed))
+            #prev_ui.update()
             next_ui.replace_data(self.np.next_messages_passed, len(self.np.next_messages_passed))
             next_ui.update()
 
