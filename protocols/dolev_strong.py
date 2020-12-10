@@ -86,7 +86,7 @@ class DolevStrong(ProtocolBase):
     def init_state(self, state):
         state["round"] = 0
         state["extracted_set"] = set()
-        state["known_signatures"] = []
+
 
     def get_protocol_name(self) -> str:
         return DOLEV_STRONG_PROTOCOL

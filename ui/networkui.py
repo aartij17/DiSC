@@ -65,9 +65,15 @@ class NetworkUI:
 
         Labels = {}
         for a in From:
-            Labels[a] = a
+            if type(a) == str:
+                Labels[a] = a
+            else:
+                Labels[a] = a.content
         for b in To:
-            Labels[b] = b
+            if type(b) == str:
+                Labels[b] = b
+            else:
+                Labels[b] = b.content
 
         G = nx.from_pandas_edgelist(
             df, 'from', 'to', create_using=nx.DiGraph())
