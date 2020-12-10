@@ -155,25 +155,15 @@ interactive_input = False
 config_blob = {}
 
 if __name__ == '__main__':
-    f = open("config.json")
+    if len(sys.argv) == 1:
+        file_name = "config.json"
+    else:
+        file_name = sys.argv[1]
+    f = open(file_name)
     lines = f.read()
     config_blob = json.loads(lines)
-    user_interact = input("How would you like to input?\n1. File(config.json)\n2. Interactive input\n")
-    if user_interact == "1":
-        protocol_chosen = config_blob["protocol"]
-    else:
-        interactive_input = True
-        while True:
-            protocol_chosen = input("Choose your protocol:\n1. Dolev Strong\n2. Streamlet\n")
-            if protocol_chosen == '1':
-                protocol_chosen = DOLEV_STRONG_PROTOCOL
-                break
-            elif protocol_chosen == '2':
-                protocol_chosen = STREAMLET_PROTOCOL
-                break
-            else:
-                print("Please enter the correct protocol choice as numbers")
-                continue
+    #user_interact = input("How would you like to input?\n1. File(config.json)\n2. Interactive input\n")
+    protocol_chosen = config_blob["protocol"]
     init_logger()
     m = Main(protocol_chosen)
     m.start_loop()

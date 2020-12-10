@@ -1,5 +1,5 @@
 {
-  "protocol": "DolevStrong",
+  "protocol": "Streamlet",
   "honest_nodes": 4,
   "adversary_nodes": [
     "DoNothing"

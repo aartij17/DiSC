@@ -43,7 +43,7 @@ class NetworkUI:
                 inner_color_triple = [1, 0.5, 1]
                 if message is not None and type(message) != str:
                     #sender_node_name = "Sender: Node " + str(message.get_sender())
-                    sender_node_name = str(message.get_sender()) + " "
+                    sender_node_name = " " + str(message.get_sender()) + " "
                     if int(message.get_sender()) >= self.num_honest_nodes:
                         inner_color_triple = [1, 0, 0]
                     #sender_node_name = "Sender: Node " + str(message.get_sender())

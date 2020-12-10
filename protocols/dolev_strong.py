@@ -3,7 +3,7 @@ from common.constants import *
 from common.signatures import *
 from message import Message
 from protocols.protocol import ProtocolBase
-FIRST_DOLEV_STRONG_MESSAGE = 1
+FIRST_DOLEV_STRONG_MESSAGE = 999
 SIG_KEY_FORMAT = "Key:{}"
 
 
