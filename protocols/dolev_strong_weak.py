@@ -66,16 +66,21 @@ class DolevStrongWeak(ProtocolBase):
                 valid_rcvd_msg_content.append("{}".format(r_msg.content))
                 state["extracted_set"].add(r_msg.content)
 
-                new_message = Message(r_msg.content, state["node_id"], state["round"], r_msg.signatures.copy())
-                new_message.create_add_signature(SIG_KEY_FORMAT.format(state["node_id"]), r_msg.content)
-                messages_to_be_sent.append(new_message)
+                sig = create_signature (SIG_KEY_FORMAT.format(state["node_id"]), r_msg.content)
+                
+                if (sig not in r_msg.signatures):
+                    #print ("Adding signature to message")
+                    new_message = Message(r_msg.content, state["node_id"], state["round"], r_msg.signatures.copy())
+                    new_message.create_add_signature(SIG_KEY_FORMAT.format(state["node_id"]), r_msg.content)
+                    messages_to_be_sent.append(new_message)
 
-            if state["round"] < self.num_faulty_nodes:
+            
+            if state["round"] < self.num_faulty_nodes and len(messages_to_be_sent) > 0:
                 np.broadcast(messages_to_be_sent, True)
 
 
         if state["round"] == self.num_faulty_nodes:
-            print("current_round: {}, num_faulty_nodes: {}".format(state["round"], self.num_faulty_nodes))
+            #print("current_round: {}, num_faulty_nodes: {}".format(state["round"], self.num_faulty_nodes))
             if len(state["extracted_set"]) == 1:
                 log.error("Consensus output: {}".format(
                     state["extracted_set"]))  # TODO: figure out what bit has to be returned
@@ -95,7 +100,7 @@ class DolevStrongWeak(ProtocolBase):
     def verify_message_signatures(self, msg_obj, state):
         if not (len(set(msg_obj.signatures)) == len(msg_obj.signatures)
                 and len(msg_obj.signatures) == state["round"]):
-            print(msg_obj.signatures)
+            #print(msg_obj.signatures)
             #log.debug("len(set(msg_obj.signatures)) == len(msg_obj.signatures): {}".format(len(set(msg_obj.signatures)) == len(msg_obj.signatures)))
             #log.debug("len(msg_obj.signatures) != state[round]: {}".format(len(msg_obj.signatures) != state["round"]))
             return False

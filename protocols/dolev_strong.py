@@ -64,12 +64,16 @@ class DolevStrong(ProtocolBase):
 
                 valid_rcvd_msg_content.append("{}".format(r_msg.content))
                 state["extracted_set"].add(r_msg.content)
+                
+                sig = create_signature (SIG_KEY_FORMAT.format(state["node_id"]), r_msg.content)
+                
+                if (sig not in r_msg.signatures):
+                    new_message = Message(r_msg.content, state["node_id"], state["round"], r_msg.signatures.copy())
+                    new_message.create_add_signature(SIG_KEY_FORMAT.format(state["node_id"]), r_msg.content)
+                    messages_to_be_sent.append(new_message)
 
-                new_message = Message(r_msg.content, state["node_id"], state["round"], r_msg.signatures.copy())
-                new_message.create_add_signature(SIG_KEY_FORMAT.format(state["node_id"]), r_msg.content)
-                messages_to_be_sent.append(new_message)
-
-            if state["round"] < self.num_faulty_nodes + 1:
+            
+            if state["round"] < self.num_faulty_nodes + 1 and len(messages_to_be_sent) > 0:
                 np.broadcast(messages_to_be_sent, True)
 
 

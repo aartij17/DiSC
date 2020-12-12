@@ -42,8 +42,7 @@ class NetworkProcess:
             messages_to_be_sent.append(Message(m, message.sender_id, message.round, message.signatures))
 
 
-        log.debug("messages sent out by network process: {}".format(messages_to_be_sent))
-        log.debug("receiver id: {}".format(receive_node_id))
+        log.debug("message sent from {} to {} -> {}".format(message.sender_id, receive_node_id, messages_to_be_sent))
         for m in messages_to_be_sent:
             if len(self.next_messages_passed[receive_node_id]) == 0:
                 self.next_messages_passed[receive_node_id] = [m]
@@ -51,8 +50,8 @@ class NetworkProcess:
                 self.next_messages_passed[receive_node_id].append(m)
 
     def receive_messages(self, receive_node_id):
-        from main import log
-        log.debug("return from receive message: {}".format(self.prev_messages_passed[receive_node_id]))
+        #from main import log
+        #log.debug("return from receive message: {}".format(self.prev_messages_passed[receive_node_id]))
         return self.prev_messages_passed[receive_node_id].copy()
 
     def drop_message(self, send_node_id, receive_node_id):
