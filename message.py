@@ -1,30 +1,48 @@
 import json
+
 from common.constants import *
 from common.signatures import create_signature
 
 
 class Message:
-    def __init__(self, content, r=0, signatures=None):
+    def __init__(self, content, sender_id, r=0, signatures=None):
         self.content = content
+        self.sender_id = sender_id
         self.round = r
         self.signatures = signatures if signatures else []
+        self.sender_id = sender_id
 
-    def get_new_signature(self, r, node_id, message_content):
-        return create_signature("{}-{}".format(r, node_id), message_content)
+    def get_sender(self):
+        return self.sender_id
+
+    def create_message_string(self):
+        return "{}{}{}{}{}{}{}".format(
+            self.round,
+            INTRA_MESSAGE_DELIM,
+            self.sender_id,
+            INTRA_MESSAGE_DELIM,
+            self.content,
+            INTRA_MESSAGE_DELIM,
+            json.dumps(self.signatures)
+        )
 
     @classmethod
-    def create_message(cls, round, content, signatures):
-        return "{}{}{}{}{}".format(
+    def create_message(cls, round, sender_id, content, signatures):
+        return "{}{}{}{}{}{}{}".format(
             round,
+            INTRA_MESSAGE_DELIM,
+            sender_id,
             INTRA_MESSAGE_DELIM,
             content,
             INTRA_MESSAGE_DELIM,
-            json.dumps(signatures)
-        )
+            json.dumps(signatures))
 
-    def create_add_signature(self, round, node_id, content):
-        signature = self.get_new_signature(round, node_id, content)
+    def create_add_signature(self, key, content):
+        signature = create_signature(key, content)
         self.signatures.append(signature)
+
+    def get_sender(self):
+        return self.sender_id
 
     @classmethod
     def get_message_elements(cls, msg):
@@ -40,20 +58,28 @@ class Message:
 
     @classmethod
     def get_message_content(cls, msg):
-        #print("############", msg.content)
         return msg.content
 
-    @classmethod
-    def get_message_signatures(cls, msg):
-        return msg.signatures
+    def get_message_signatures(self):
+        return self.signatures
 
     @classmethod
     def get_message_object(cls, msg):
+        print(msg)
         message_elements = msg.split(INTRA_MESSAGE_DELIM)
-        signatures = json.loads(message_elements[2])
+        signatures = json.loads(message_elements[3])
         new_msg_obj = Message(
+            message_elements[2],
             message_elements[1],
             r=message_elements[0],
             signatures=signatures
         )
         return new_msg_obj
+
+    @classmethod
+    def copy_message(cls, msg):
+        cpy_msg = Message(msg.content, msg.get_sender(), msg.round, msg.signatures.copy())
+        return cpy_msg
+
+    def __repr__(self):
+        return self.create_message_string()

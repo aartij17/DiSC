@@ -1,0 +1,20 @@
+0|0|{"node_id": 0, "received_messages": [], "round": 1, "extracted_set": "{1}"}
+0|1|{"node_id": 1, "received_messages": [], "round": 1, "extracted_set": "set()"}
+0|2|{"node_id": 2, "received_messages": [], "round": 1, "extracted_set": "set()"}
+0|3|{"node_id": 3, "received_messages": [], "round": 1, "extracted_set": "set()"}
+0|4|{"node_id": 4, "received_messages": [], "round": 1}
+1|0|{"node_id": 0, "received_messages": "[0|0|1|[\"Sig:Key:0(Message:1)\"]]", "round": 2, "extracted_set": "{1}"}
+1|1|{"node_id": 1, "received_messages": "[0|0|1|[\"Sig:Key:0(Message:1)\"]]", "round": 2, "extracted_set": "{1}"}
+1|2|{"node_id": 2, "received_messages": "[0|0|1|[\"Sig:Key:0(Message:1)\"]]", "round": 2, "extracted_set": "{1}"}
+1|3|{"node_id": 3, "received_messages": "[0|0|1|[\"Sig:Key:0(Message:1)\"]]", "round": 2, "extracted_set": "{1}"}
+1|4|{"node_id": 4, "received_messages": [], "round": 2}
+2|0|{"node_id": 0, "received_messages": "[1|0|1|[\"Sig:Key:0(Message:1)\", \"Sig:Key:0(Message:1)\"], 1|1|1|[\"Sig:Key:0(Message:1)\", \"Sig:Key:1(Message:1)\"], 1|2|1|[\"Sig:Key:0(Message:1)\", \"Sig:Key:2(Message:1)\"], 1|3|1|[\"Sig:Key:0(Message:1)\", \"Sig:Key:3(Message:1)\"]]", "round": 3, "extracted_set": "{1}"}
+2|1|{"node_id": 1, "received_messages": "[1|0|1|[\"Sig:Key:0(Message:1)\", \"Sig:Key:0(Message:1)\"], 1|1|1|[\"Sig:Key:0(Message:1)\", \"Sig:Key:1(Message:1)\"], 1|2|1|[\"Sig:Key:0(Message:1)\", \"Sig:Key:2(Message:1)\"], 1|3|1|[\"Sig:Key:0(Message:1)\", \"Sig:Key:3(Message:1)\"]]", "round": 3, "extracted_set": "{1}"}
+2|2|{"node_id": 2, "received_messages": "[1|0|1|[\"Sig:Key:0(Message:1)\", \"Sig:Key:0(Message:1)\"], 1|1|1|[\"Sig:Key:0(Message:1)\", \"Sig:Key:1(Message:1)\"], 1|2|1|[\"Sig:Key:0(Message:1)\", \"Sig:Key:2(Message:1)\"], 1|3|1|[\"Sig:Key:0(Message:1)\", \"Sig:Key:3(Message:1)\"]]", "round": 3, "extracted_set": "{1}"}
+2|3|{"node_id": 3, "received_messages": "[1|0|1|[\"Sig:Key:0(Message:1)\", \"Sig:Key:0(Message:1)\"], 1|1|1|[\"Sig:Key:0(Message:1)\", \"Sig:Key:1(Message:1)\"], 1|2|1|[\"Sig:Key:0(Message:1)\", \"Sig:Key:2(Message:1)\"], 1|3|1|[\"Sig:Key:0(Message:1)\", \"Sig:Key:3(Message:1)\"]]", "round": 3, "extracted_set": "{1}"}
+2|4|{"node_id": 4, "received_messages": [], "round": 3}
+3|0|{"node_id": 0, "received_messages": [], "round": 4, "extracted_set": "{1}"}
+3|1|{"node_id": 1, "received_messages": [], "round": 4, "extracted_set": "{1}"}
+3|2|{"node_id": 2, "received_messages": [], "round": 4, "extracted_set": "{1}"}
+3|3|{"node_id": 3, "received_messages": [], "round": 4, "extracted_set": "{1}"}
+3|4|{"node_id": 4, "received_messages": [], "round": 4}
