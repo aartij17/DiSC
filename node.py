@@ -3,9 +3,10 @@ import json
 
 class SetEncoder(json.JSONEncoder):
     def default(self, obj):
-       if isinstance(obj, set):
-          return list(obj)
-       return json.JSONEncoder.default(self, obj)
+        if isinstance(obj, set):
+            return list(obj)
+        return json.JSONEncoder.default(self, obj)
+
 
 def is_jsonable(x):
     try:
@@ -13,6 +14,7 @@ def is_jsonable(x):
         return True
     except:
         return False
+
 
 class Node:
     def __init__(self, node_id, protocol, np, log, adversary=False):
@@ -38,11 +40,10 @@ class Node:
 
     def run_protocol_one_round(self):
         from main import log
-        #print("Node state before protocol run: {}".format(self.state))
+        # print("Node state before protocol run: {}".format(self.state))
         self.protocol.run_protocol_one_round(self.state, self.np, self.log)
-        #print("Node state after protocol run: {}".format(self.state))
+        # print("Node state after protocol run: {}".format(self.state))
         log.info("=======================================================================================")
-
 
     def get_committed_log(self):
         return self.committed_log
@@ -51,14 +52,12 @@ class Node:
         # stub
         pass
 
-
     def dump_state(self):
-        from main import log
         tmp_state = {}
-        for key in self.state: # Fix
-            #log.error("state: {}".format(self.state))
+        for key in self.state:  # Fix
+            # log.error("state: {}".format(self.state))
             value = self.state[key]
-            #log.error("is_jsonable: {}, is_jsonable_STR: {}".format(is_jsonable(value), is_jsonable(str(value))))
+            # log.error("is_jsonable: {}, is_jsonable_STR: {}".format(is_jsonable(value), is_jsonable(str(value))))
             if is_jsonable(value):
                 tmp_state[key] = value
             elif is_jsonable(str(value)):

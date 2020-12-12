@@ -1,11 +1,11 @@
-from protocols.protocol import ProtocolBase
-from common.constants import *
-from message import *
 import random
 import string
 
+from message import *
+from protocols.protocol import ProtocolBase
 
 SIG_KEY_FORMAT = "Key:{}"
+
 
 class RandomBroadcastAdversary(ProtocolBase):
     def __init__(self, num_faulty_nodes, num_honest_nodes):

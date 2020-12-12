@@ -1,10 +1,9 @@
-from protocols.dolev_strong import DolevStrong
-from protocols.dolev_strong_weak import DolevStrongWeak
-from protocols.streamlet import Streamlet
-from common.constants import *
 from protocols.adversaries.do_nothing_protocol import *
 from protocols.adversaries.dolev_strong_adversary import *
 from protocols.adversaries.random_broadcast_protocol import *
+from protocols.dolev_strong import DolevStrong
+from protocols.dolev_strong_weak import DolevStrongWeak
+from protocols.streamlet import Streamlet
 
 
 def get_protocol(protocol, num_faulty_nodes, num_honest_nodes):

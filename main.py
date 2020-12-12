@@ -1,38 +1,36 @@
+import datetime
+import logging
+import os
+import sys
+
 from common.log import *
 from common.utils import *
 from network_process import NetworkProcess
-from ui.networkui import NetworkUI
 from node import Node
-import os
-import datetime
-import json
-import sys
-import logging
-
+from ui.networkui import NetworkUI
 
 log = logging.getLogger('pythonConfig')
+
 
 def init_logger():
     global log
     LOG_LEVEL = logging.DEBUG
-    #LOGFORMAT = "  %(log_color)s%(reset)s %(log_color)s%(message)s%(reset)s"
     from colorlog import ColoredFormatter
     logging.root.setLevel(LOG_LEVEL)
     formatter = ColoredFormatter(
-    "%(log_color)s%(reset)s %(log_color)s%(message)s",
-    datefmt=None,
-    reset=True,
-    log_colors={
-        'DEBUG':    'cyan',
-        'INFO':     'green',
-        'WARNING':  'yellow',
-        'ERROR':    'red',
-        'CRITICAL': 'red,bg_white',
-    },
-    secondary_log_colors={},
-    style='%'
+        "%(log_color)s%(reset)s %(log_color)s%(message)s",
+        datefmt=None,
+        reset=True,
+        log_colors={
+            'DEBUG': 'cyan',
+            'INFO': 'green',
+            'WARNING': 'yellow',
+            'ERROR': 'red',
+            'CRITICAL': 'red,bg_white',
+        },
+        secondary_log_colors={},
+        style='%'
     )
-    #formatter = ColoredFormatter(LOGFORMAT)
     stream = logging.StreamHandler()
     stream.setLevel(LOG_LEVEL)
     stream.setFormatter(formatter)
@@ -77,18 +75,17 @@ class Main:
 
     def start_loop(self):
         counter = 0
-        #prev_ui = NetworkUI(self.np.prev_messages_passed, len(self.np.prev_messages_passed), self.num_h_nodes, self.num_a_nodes)
-        next_ui = NetworkUI(self.np.next_messages_passed, len(self.np.next_messages_passed), self.num_h_nodes, self.num_a_nodes)
-        #prev_ui.start()
+        next_ui = NetworkUI(self.np.next_messages_passed, len(self.np.next_messages_passed), self.num_h_nodes,
+                            self.num_a_nodes)
         next_ui.start()
 
         current_path = os.getcwd()
-        directory_name =  os.path.join(current_path, 'run_' + str(datetime.datetime.now()))
+        directory_name = os.path.join(current_path, 'run_' + str(datetime.datetime.now()))
         os.makedirs(directory_name)
-        
-        f_states = open(os.path.join(directory_name,"state_dump.txt"), 'w')
+
+        f_states = open(os.path.join(directory_name, "state_dump.txt"), 'w')
         f_np = open(os.path.join(directory_name, "np_dump.txt"), 'w')
-        f_conf = open(os.path.join(directory_name,"config_dump.txt"), 'w')
+        f_conf = open(os.path.join(directory_name, "config_dump.txt"), 'w')
         f_conf.write(json.dumps({
             'Honest nodes': len(self.h_nodes_arr),
             'Adversary nodes': len(self.a_nodes_arr),
@@ -108,21 +105,14 @@ class Main:
             for i in range(self.num_a_nodes):
                 self.a_nodes_arr[i].run_protocol_one_round()
 
-
-            #prev_ui.replace_data(self.np.prev_messages_passed, len(self.np.prev_messages_passed))
-            #prev_ui.update()
             next_ui.replace_data(self.np.next_messages_passed, len(self.np.next_messages_passed))
             next_ui.update()
 
             str_prev_msgs = [str(m) for m in self.np.prev_messages_passed]
             str_next_msgs = [str(m) for m in self.np.next_messages_passed]
 
-            ## ASK DANNY ABOUT UI
             f_np.write(str(counter) + "|PrevMessages|" + json.dumps(str_prev_msgs) + "\n")
             f_np.write(str(counter) + "|NextMessages|" + json.dumps(str_next_msgs) + "\n")
-
-
-
 
             for node in self.h_nodes_arr:
                 f_states.write(str(counter) + "|" + str(node.get_id()) + "|" + node.dump_state() + "\n")
@@ -162,7 +152,6 @@ if __name__ == '__main__':
     f = open(file_name)
     lines = f.read()
     config_blob = json.loads(lines)
-    #user_interact = input("How would you like to input?\n1. File(config.json)\n2. Interactive input\n")
     protocol_chosen = config_blob["protocol"]
     init_logger()
     m = Main(protocol_chosen)

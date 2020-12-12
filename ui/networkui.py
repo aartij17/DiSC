@@ -1,9 +1,8 @@
-import pandas as pd
-import networkx as nx
-import matplotlib.animation as anim
-import matplotlib.pyplot as plt
-import threading
 import time
+
+import matplotlib.pyplot as plt
+import networkx as nx
+import pandas as pd
 
 fig = plt.figure(figsize=(12, 8))
 
@@ -30,7 +29,6 @@ class NetworkUI:
         NodeColors = {}
 
         for i in range(self.num_nodes):
-            #recv_node_name = "Receiver: Node " + str(i)
             recv_node_name = str(i)
             pos[recv_node_name] = (i, 1)
             message_idx = 0
@@ -42,15 +40,13 @@ class NetworkUI:
                 message = self.data[i][j]
                 inner_color_triple = [1, 0.5, 1]
                 if message is not None and type(message) != str:
-                    #sender_node_name = "Sender: Node " + str(message.get_sender())
                     sender_node_name = " " + str(message.get_sender()) + " "
                     if int(message.get_sender()) >= self.num_honest_nodes:
                         inner_color_triple = [1, 0, 0]
-                    #sender_node_name = "Sender: Node " + str(message.get_sender())
                     if sender_node_name not in pos:
                         pos[sender_node_name] = (j, 3)
                         NodeColors[sender_node_name] = inner_color_triple
-                        
+
                     message_idx += 1
                     NodeColors[message] = [1, 1, 0]
                     if message not in pos:
@@ -102,7 +98,7 @@ class NetworkUI:
 
         edges = nx.draw_networkx_edges(G, pos,
                                        node_size=1.8e3,
-                                       arrowstyle='->', width=2)  # , arrowsizes=6)
+                                       arrowstyle='->', width=2)
 
     def replace_data(self, new_data, new_num_nodes):
         self.data = new_data
@@ -131,7 +127,6 @@ if __name__ == "__main__":
     ui = NetworkUI(inboxes, len(inboxes))
     ui.start()
 
-
     test_message_inbox = [
         ["message1", "message2", "message3", "message12"],
         ["message5", "message6", "message7", ""],
@@ -142,8 +137,6 @@ if __name__ == "__main__":
     for i in range(len(test_message_inbox)):
         for j in range(len(test_message_inbox[i])):
             inboxes[i].append(test_message_inbox[i][j])
-            # logs.write(i, test_message_inbox[i][j])
             ui.update()
-            # logui.update()
             print(inboxes)
             time.sleep(3)

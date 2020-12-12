@@ -1,4 +1,5 @@
 import json
+
 from common.constants import *
 from common.signatures import create_signature
 
@@ -11,9 +12,9 @@ class Message:
         self.signatures = signatures if signatures else []
         self.sender_id = sender_id
 
-    def get_sender (self):
+    def get_sender(self):
         return self.sender_id
-        
+
     def create_message_string(self):
         return "{}{}{}{}{}{}{}".format(
             self.round,
@@ -58,7 +59,6 @@ class Message:
     @classmethod
     def get_message_content(cls, msg):
         return msg.content
-
 
     def get_message_signatures(self):
         return self.signatures
